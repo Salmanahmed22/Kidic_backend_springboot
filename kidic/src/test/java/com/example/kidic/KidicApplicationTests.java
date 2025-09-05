@@ -1,10 +1,10 @@
-package org.codewithkidic.kidic_backend;
+package com.example.kidic;
 
 import org.junit.jupiter.api.Test;
 import org.springframework.boot.test.context.SpringBootTest;
 
 @SpringBootTest
-class KidicBackendApplicationTests {
+class KidicApplicationTests {
 
     @Test
     void contextLoads() {
