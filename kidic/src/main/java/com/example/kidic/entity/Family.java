@@ -12,7 +12,7 @@ import java.util.UUID;
 public class Family {
     
     @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @GeneratedValue(strategy = GenerationType.UUID)
     @Column(columnDefinition = "BINARY(16)")
     private UUID id;
     

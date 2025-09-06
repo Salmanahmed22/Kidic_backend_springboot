@@ -32,9 +32,9 @@ public class Child {
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "parent_id")
     private Parent parent;
-    
+
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "family_id")
+    @JoinColumn(name = "family_id", columnDefinition = "BINARY(16)")
     private Family family;
     
     @Size(max = 1000)
