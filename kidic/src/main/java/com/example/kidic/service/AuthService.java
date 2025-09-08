@@ -26,7 +26,9 @@ public class AuthService {
     private AuthenticationManager authenticationManager;
     @SneakyThrows
     public AuthResponseDTO signUp(SignUpRequestDTO request) {
-        //TODO: check if email already in use
+        if (parentRepository.existsByEmail(request.getEmail())) {
+            throw new IllegalArgumentException("Email is already in use!");
+        }
         Parent parent = new Parent();
         parent.setName(request.getName());
         parent.setPhone(request.getPhone());
