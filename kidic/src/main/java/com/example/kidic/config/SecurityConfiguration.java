@@ -25,7 +25,7 @@ public class SecurityConfiguration {
 
                 // Authorization rules
                 .authorizeHttpRequests(auth -> auth
-                        .requestMatchers("/auth/**").permitAll()   // example: public endpoints
+                        .requestMatchers("api/auth/**").permitAll()   // example: public endpoints
                         .anyRequest().authenticated()
                 )
 
