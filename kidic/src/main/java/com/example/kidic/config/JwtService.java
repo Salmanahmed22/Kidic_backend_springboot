@@ -6,6 +6,7 @@ import io.jsonwebtoken.SignatureAlgorithm;
 import io.jsonwebtoken.io.Decoders;
 import io.jsonwebtoken.security.Keys;
 import org.springframework.security.core.userdetails.UserDetails;
+import org.springframework.stereotype.Service;
 
 import java.security.Key;
 import java.util.Date;
@@ -13,6 +14,7 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.function.Function;
 
+@Service
 public class JwtService {
     private static final String SECRET_KEY = "4f714a748e4ba9ead2c9af8447bcb33f7ed0cb1043ca08ac0254a4fa313d51bb";
     public String extractUsername(String token) {
@@ -53,7 +55,7 @@ public class JwtService {
 
     public boolean isTokenValid(String token, UserDetails userDetails) {
         String username = this.extractUsername(token);
-        return !isTokenExpired(token) && username.equals(userDetails.getUsername())
+        return !isTokenExpired(token) && username.equals(userDetails.getUsername());
     }
 
     private boolean isTokenExpired(String token) {
