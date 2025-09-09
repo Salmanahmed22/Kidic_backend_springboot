@@ -1,5 +1,6 @@
 package com.example.kidic.config;
 
+import com.example.kidic.entity.Parent;
 import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.SignatureAlgorithm;
@@ -38,8 +39,17 @@ public class JwtService {
         return Keys.hmacShaKeyFor(keyBytes);
     }
     public String generateToken(UserDetails userDetails) {
-        return generateToken(new HashMap<>(), userDetails);
+        Parent parent = (Parent) userDetails;  // since your Parent implements UserDetails
+
+        Map<String, Object> extraClaims = new HashMap<>();
+
+        if (parent.getFamily() != null) {
+            extraClaims.put("family_id", parent.getFamily().getId());
+        }
+
+        return generateToken(extraClaims, userDetails);
     }
+
     public String generateToken(
             Map<String,Object> extraClaims,
             UserDetails userDetails) {

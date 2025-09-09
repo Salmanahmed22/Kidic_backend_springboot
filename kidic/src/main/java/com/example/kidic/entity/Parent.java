@@ -33,10 +33,7 @@ public class Parent implements UserDetails {
     private String email;
     
     private Boolean gender; // true for male, false for female
-    
-    @OneToMany(mappedBy = "parent", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
-    private List<Child> children = new ArrayList<>();
-    
+
     @NotBlank
     @Size(max = 255)
     private String password; // Hashed String
@@ -44,11 +41,13 @@ public class Parent implements UserDetails {
     @Enumerated(EnumType.STRING)
     @Column(name = "profile_picture")
     private ProfilePictureType profilePicture;
-    
-    @ManyToMany(mappedBy = "parents", fetch = FetchType.LAZY)
-    private List<Family> families = new ArrayList<>();
-    
-    // Constructors
+
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "family_id", nullable = true)
+    private Family family;
+
+
+    // Constructorsrfg
     public Parent() {}
     
     public Parent(String name, String phone, String email, Boolean gender, String password) {
@@ -99,14 +98,7 @@ public class Parent implements UserDetails {
     public void setGender(Boolean gender) {
         this.gender = gender;
     }
-    
-    public List<Child> getChildren() {
-        return children;
-    }
-    
-    public void setChildren(List<Child> children) {
-        this.children = children;
-    }
+
     
     public String getPassword() {
         return password;
@@ -123,15 +115,15 @@ public class Parent implements UserDetails {
     public void setProfilePicture(ProfilePictureType profilePicture) {
         this.profilePicture = profilePicture;
     }
-    
-    public List<Family> getFamilies() {
-        return families;
+
+    public Family getFamily() {
+        return family;
     }
-    
-    public void setFamilies(List<Family> families) {
-        this.families = families;
+
+    public void setFamily(Family family) {
+        this.family = family;
     }
-    
+
     public enum ProfilePictureType {
         DEFAULT, CUSTOM, AVATAR_1, AVATAR_2, AVATAR_3
     }
