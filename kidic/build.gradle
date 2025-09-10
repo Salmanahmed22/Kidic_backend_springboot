@@ -23,22 +23,40 @@ ext {
 }
 
 dependencies {
+    // Core Spring Boot dependencies
     implementation 'org.springframework.boot:spring-boot-starter-data-jpa'
     implementation 'org.springframework.boot:spring-boot-starter-web'
     implementation 'org.springframework.boot:spring-boot-starter-validation'
+    implementation 'org.springframework.boot:spring-boot-starter-security'
+    implementation 'org.springframework.boot:spring-boot-starter-actuator'
+
+    // Spring AI dependencies
     implementation 'org.springframework.ai:spring-ai-starter-mcp-client'
     implementation 'org.springframework.ai:spring-ai-starter-mcp-server'
-    implementation 'org.springframework.boot:spring-boot-starter-actuator'
+
+    // MySQL driver for production
     runtimeOnly 'com.mysql:mysql-connector-j'
+
+    // H2 database for testing
+    testImplementation 'com.h2database:h2:2.3.232'
+
+    // Spring Boot test starter (includes JUnit 5, Mockito, etc.)
     testImplementation 'org.springframework.boot:spring-boot-starter-test'
+
+    // JUnit platform launcher for test runtime
     testRuntimeOnly 'org.junit.platform:junit-platform-launcher'
+
+    // Spring Dotenv for environment variable management
     implementation 'me.paulschwarz:spring-dotenv:4.0.0'
+
     implementation 'org.springframework.boot:spring-boot-starter-security'
     implementation 'io.jsonwebtoken:jjwt-api:0.11.5'
     implementation 'io.jsonwebtoken:jjwt-impl:0.11.5'
     implementation 'io.jsonwebtoken:jjwt-jackson:0.11.5'
     compileOnly 'org.projectlombok:lombok:1.18.32'
     annotationProcessor 'org.projectlombok:lombok:1.18.32'
+
+
 }
 
 dependencyManagement {
@@ -49,4 +67,7 @@ dependencyManagement {
 
 tasks.named('test') {
     useJUnitPlatform()
+    testLogging {
+        events "passed", "skipped", "failed" // Show test results in console
+    }
 }
