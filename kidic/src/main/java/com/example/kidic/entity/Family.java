@@ -22,15 +22,11 @@ public class Family {
     
     @OneToMany(mappedBy = "family", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
     private List<Child> children = new ArrayList<>();
-    
-    @ManyToMany(fetch = FetchType.LAZY)
-    @JoinTable(
-        name = "family_parents",
-        joinColumns = @JoinColumn(name = "family_id"),
-        inverseJoinColumns = @JoinColumn(name = "parent_id")
-    )
+
+    @OneToMany(mappedBy = "family", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
     private List<Parent> parents = new ArrayList<>();
-    
+
+
     @OneToMany(mappedBy = "family", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
     private List<Notification> notifications = new ArrayList<>();
     

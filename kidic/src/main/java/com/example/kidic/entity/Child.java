@@ -28,13 +28,9 @@ public class Child {
     @Past
     @Column(name = "date_of_birth")
     private LocalDate dateOfBirth;
-    
-    @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "parent_id")
-    private Parent parent;
 
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "family_id", columnDefinition = "BINARY(16)")
+    @JoinColumn(name = "family_id", columnDefinition = "BINARY(16)", nullable = false)
     private Family family;
     
     @Size(max = 1000)
@@ -60,7 +56,6 @@ public class Child {
         this.name = name;
         this.gender = gender;
         this.dateOfBirth = dateOfBirth;
-        this.parent = parent;
         this.family = family;
     }
     
@@ -95,14 +90,6 @@ public class Child {
     
     public void setDateOfBirth(LocalDate dateOfBirth) {
         this.dateOfBirth = dateOfBirth;
-    }
-    
-    public Parent getParent() {
-        return parent;
-    }
-    
-    public void setParent(Parent parent) {
-        this.parent = parent;
     }
     
     public Family getFamily() {
