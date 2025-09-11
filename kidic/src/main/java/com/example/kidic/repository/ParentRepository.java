@@ -19,8 +19,8 @@ public interface ParentRepository extends JpaRepository<Parent, Long> {
     @Query("SELECT p FROM Parent p WHERE p.name LIKE %:name%")
     List<Parent> findByNameContaining(@Param("name") String name);
     
-    @Query("SELECT p FROM Parent p JOIN p.children c WHERE c.id = :childId")
-    List<Parent> findByChildId(@Param("childId") Long childId);
+//    @Query("SELECT p FROM Parent p JOIN p.children c WHERE c.id = :childId")
+//    List<Parent> findByChildId(@Param("childId") Long childId);
     
     boolean existsByEmail(String email);
 }

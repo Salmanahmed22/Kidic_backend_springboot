@@ -63,31 +63,33 @@ public class DataInitializer implements CommandLineRunner {
 
     private void initializeData() {
         try {
+
+            // Create Families
+            Family family1 = new Family("family123");
+            family1.setId(UUID.fromString("550e8400-e29b-41d4-a716-446655440001"));
+
+            Family family2 = new Family("family456");
+            family2.setId(UUID.fromString("550e8400-e29b-41d4-a716-446655440002"));
+
+            familyRepository.saveAll(Arrays.asList(family1, family2));
+
             System.out.println("👨‍👩‍👧‍👦 Creating parents...");
             // Create Parents
-            Parent parent1 = new Parent("John Smith", "1234567890", "john.smith@email.com", true, 
+            Parent parent1 = new Parent("John Smith", "1234567890", "john.smith@email.com", true,
                     "$2a$10$N.zmdr9k7uOCQb376NoUnuTJ8iAt6Z5EHsM8lE9lBOsl7iKTVEFDi");
             parent1.setProfilePicture(Parent.ProfilePictureType.DEFAULT);
-            
-            Parent parent2 = new Parent("Jane Smith", "1234567891", "jane.smith@email.com", false, 
+            parent1.setFamily(family1);
+
+            Parent parent2 = new Parent("Jane Smith", "1234567891", "jane.smith@email.com", false,
                     "$2a$10$N.zmdr9k7uOCQb376NoUnuTJ8iAt6Z5EHsM8lE9lBOsl7iKTVEFDi");
             parent2.setProfilePicture(Parent.ProfilePictureType.AVATAR_1);
-            
-            Parent parent3 = new Parent("Mike Johnson", "1234567892", "mike.johnson@email.com", true, 
+            parent2.setFamily(family1);
+
+            Parent parent3 = new Parent("Mike Johnson", "1234567892", "mike.johnson@email.com", true,
                     "$2a$10$N.zmdr9k7uOCQb376NoUnuTJ8iAt6Z5EHsM8lE9lBOsl7iKTVEFDi");
             parent3.setProfilePicture(Parent.ProfilePictureType.CUSTOM);
-            
-            parentRepository.saveAll(Arrays.asList(parent1, parent2, parent3));
+            parent3.setFamily(family2);
             System.out.println("✅ Parents created successfully");
-
-        // Create Families
-        Family family1 = new Family("family123");
-        family1.setId(UUID.fromString("550e8400-e29b-41d4-a716-446655440001"));
-        
-        Family family2 = new Family("family456");
-        family2.setId(UUID.fromString("550e8400-e29b-41d4-a716-446655440002"));
-        
-        familyRepository.saveAll(Arrays.asList(family1, family2));
 
         // Add parents to families
         family1.getParents().addAll(Arrays.asList(parent1, parent2));
@@ -95,15 +97,15 @@ public class DataInitializer implements CommandLineRunner {
         familyRepository.saveAll(Arrays.asList(family1, family2));
 
         // Create Children
-        Child child1 = new Child("Emma Smith", false, LocalDate.of(2020, 5, 15), parent1, family1);
+        Child child1 = new Child("Emma Smith", false, LocalDate.of(2020, 5, 15), null, family1);
         child1.setMedicalNotes("No known allergies");
-        
-        Child child2 = new Child("Liam Smith", true, LocalDate.of(2019, 8, 22), parent1, family1);
+
+        Child child2 = new Child("Liam Smith", true, LocalDate.of(2019, 8, 22), null, family1);
         child2.setMedicalNotes("Allergic to peanuts");
-        
-        Child child3 = new Child("Sophia Johnson", false, LocalDate.of(2021, 3, 10), parent3, family2);
+
+        Child child3 = new Child("Sophia Johnson", false, LocalDate.of(2021, 3, 10), null, family2);
         child3.setMedicalNotes("Asthma condition");
-        
+
         childRepository.saveAll(Arrays.asList(child1, child2, child3));
 
         // Create Notifications
