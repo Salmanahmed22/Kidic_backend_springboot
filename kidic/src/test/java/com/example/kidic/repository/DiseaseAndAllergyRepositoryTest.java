@@ -37,7 +37,7 @@ class DiseaseAndAllergyRepositoryTest {
 
     @Test
     void testFindByChild() {
-        // Create and persist a parent
+
         Parent parent = new Parent("John Smith", "1234567890", "john.smith@email.com", true,
                 "$2a$10$N.zmdr9k7uOCQb376NoUnuTJ8iAt6Z5EHsM8lE9lBOsl7iKTVEFDi");
         parent = entityManager.persistAndFlush(parent);
