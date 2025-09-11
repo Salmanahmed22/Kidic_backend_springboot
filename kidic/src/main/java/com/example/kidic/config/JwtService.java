@@ -13,6 +13,7 @@ import java.security.Key;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.UUID;
 import java.util.function.Function;
 
 @Service
@@ -33,6 +34,16 @@ public class JwtService {
                 .build().parseClaimsJws(token)
                 .getBody();
     }
+
+    public UUID extractFamilyId(String token) {
+        Claims claims = extractClaims(token);
+        Object familyIdObj = claims.get("family_id");
+        if (familyIdObj == null) {
+            return null; // parent didn't join a family yet
+        }
+        return UUID.fromString(familyIdObj.toString());
+    }
+
 
     private Key getSignInKey() {
         byte[] keyBytes = Decoders.BASE64.decode(SECRET_KEY);

@@ -2,7 +2,7 @@
   "info": {
     "name": "Kidic Auth API",
     "_postman_id": "b12345c6-d789-456f-8901-abcdef123456",
-    "description": "Postman collection to test signup and login APIs for Kidic project",
+    "description": "Postman collection to test signup, login, and child creation APIs for Kidic project",
     "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
   },
   "item": [
@@ -53,6 +53,41 @@
         }
       },
       "response": []
+    },
+    {
+      "name": "Create Child",
+      "request": {
+        "method": "POST",
+        "header": [
+          {
+            "key": "Content-Type",
+            "value": "application/json"
+          },
+          {
+            "key": "Authorization",
+            "value": "Bearer {{token}}",
+            "type": "text"
+          }
+        ],
+        "body": {
+          "mode": "raw",
+          "raw": "{\n  \"name\": \"Alice\",\n  \"gender\": false,\n  \"dateOfBirth\": \"2015-05-10\",\n  \"medicalNotes\": \"No allergies\"\n}"
+        },
+        "url": {
+          "raw": "http://localhost:8080/api/children",
+          "protocol": "http",
+          "host": ["localhost"],
+          "port": "8080",
+          "path": ["api", "children"]
+        }
+      },
+      "response": []
+    }
+  ],
+  "variable": [
+    {
+      "key": "token",
+      "value": ""
     }
   ]
 }
