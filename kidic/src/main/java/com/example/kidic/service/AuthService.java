@@ -29,6 +29,11 @@ public class AuthService {
         if (parentRepository.existsByEmail(request.getEmail())) {
             throw new IllegalArgumentException("Email is already in use!");
         }
+
+        if (request.getPassword().length() < 6) {
+            throw new IllegalArgumentException("Password must be at least 6 characters");
+        }
+
         Parent parent = new Parent();
         parent.setName(request.getName());
         parent.setPhone(request.getPhone());
@@ -45,7 +50,8 @@ public class AuthService {
         authenticationManager.authenticate(
                 new UsernamePasswordAuthenticationToken(request.getEmail(), request.getPassword())
         );
-        Parent parent = parentRepository.findByEmail(request.getEmail()).orElseThrow();
+        Parent parent = parentRepository.findByEmail(request.getEmail())
+                .orElseThrow(() -> new IllegalArgumentException("Invalid credentials!"));
         String token = jwtService.generateToken(parent);
         AuthResponseDTO response = AuthResponseDTO.builder().token(token).build();
         return response;
