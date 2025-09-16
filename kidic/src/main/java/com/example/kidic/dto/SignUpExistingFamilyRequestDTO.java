@@ -2,17 +2,20 @@ package com.example.kidic.dto;
 
 import jakarta.validation.constraints.Email;
 import jakarta.validation.constraints.NotBlank;
+import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Size;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
+import java.util.UUID;
+
 @Data
 @Builder
 @AllArgsConstructor
 @NoArgsConstructor
-public class SignUpRequestDTO {
+public class SignUpExistingFamilyRequestDTO {
     @NotBlank(message = "Name is required")
     private String name;
 
@@ -23,11 +26,14 @@ public class SignUpRequestDTO {
     @NotBlank(message = "Email is required")
     private String email;
 
-    @NotBlank(message = "gender is required")
+    @NotNull(message = "gender is required")
     private Boolean gender;
+
 
     @Size(min = 6, message = "Password must be at least 6 characters long")
     @NotBlank(message = "Password is required")
     private String password;
 
+    @NotBlank(message = "family id is required")
+    private UUID familyId;
 }

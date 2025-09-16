@@ -65,10 +65,10 @@ public class DataInitializer implements CommandLineRunner {
         try {
 
             // Create Families
-            Family family1 = new Family("family123");
+            Family family1 = new Family();
             family1.setId(UUID.fromString("550e8400-e29b-41d4-a716-446655440001"));
 
-            Family family2 = new Family("family456");
+            Family family2 = new Family();
             family2.setId(UUID.fromString("550e8400-e29b-41d4-a716-446655440002"));
 
             familyRepository.saveAll(Arrays.asList(family1, family2));

@@ -3,11 +3,13 @@ package com.example.kidic.service;
 import com.example.kidic.config.JwtService;
 import com.example.kidic.dto.AuthResponseDTO;
 import com.example.kidic.dto.LoginRequestDTO;
-import com.example.kidic.dto.SignUpRequestDTO;
+import com.example.kidic.dto.SignUpExistingFamilyRequestDTO;
+import com.example.kidic.dto.SignUpNewFamilyRequestDTO;
+import com.example.kidic.entity.Family;
 import com.example.kidic.entity.Parent;
 import com.example.kidic.repository.ParentRepository;
+import jakarta.transaction.Transactional;
 import lombok.SneakyThrows;
-import org.apache.coyote.BadRequestException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
@@ -24,8 +26,12 @@ public class AuthService {
     private JwtService jwtService;
     @Autowired
     private AuthenticationManager authenticationManager;
-    @SneakyThrows
-    public AuthResponseDTO signUp(SignUpRequestDTO request) {
+    @Autowired
+    private FamilyService familyService;
+
+    @Transactional
+    public AuthResponseDTO signUpNewFamily(SignUpNewFamilyRequestDTO request) {
+        System.out.println("hheyyyyy");
         if (parentRepository.existsByEmail(request.getEmail())) {
             throw new IllegalArgumentException("Email is already in use!");
         }
@@ -40,6 +46,37 @@ public class AuthService {
         parent.setEmail(request.getEmail());
         parent.setGender(request.getGender());
         parent.setPassword(passwordEncoder.encode(request.getPassword()));
+        Family newFamily = familyService.createFamily();
+        System.out.println("hheyyyyy before save");
+        familyService.addParentToFamily(newFamily, parent);
+        parentRepository.save(parent);
+
+        String token = jwtService.generateToken(parent);
+        AuthResponseDTO response = AuthResponseDTO.builder().token(token).build();
+        return response;
+    }
+
+    @Transactional
+    public AuthResponseDTO signUpExistingFamily(SignUpExistingFamilyRequestDTO request) {
+        if (parentRepository.existsByEmail(request.getEmail())) {
+            throw new IllegalArgumentException("Email is already in use!");
+        }
+
+        if (request.getPassword().length() < 6) {
+            throw new IllegalArgumentException("Password must be at least 6 characters");
+        }
+        Parent parent = new Parent();
+        parent.setName(request.getName());
+        parent.setPhone(request.getPhone());
+        parent.setEmail(request.getEmail());
+        parent.setGender(request.getGender());
+        parent.setPassword(passwordEncoder.encode(request.getPassword()));
+        Family existingFamily = familyService.getFamilyById(request.getFamilyId());
+        if (existingFamily == null) {
+            throw new IllegalArgumentException("Family not found!");
+        }
+        parent.setFamily(existingFamily);
+        familyService.addParentToFamily(existingFamily, parent);
         parentRepository.save(parent);
         String token = jwtService.generateToken(parent);
         AuthResponseDTO response = AuthResponseDTO.builder().token(token).build();
@@ -56,4 +93,5 @@ public class AuthService {
         AuthResponseDTO response = AuthResponseDTO.builder().token(token).build();
         return response;
     }
+
 }

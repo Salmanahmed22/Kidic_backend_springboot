@@ -12,9 +12,7 @@ import java.util.UUID;
 
 @Repository
 public interface FamilyRepository extends JpaRepository<Family, UUID> {
-    
-    @Query("SELECT f FROM Family f WHERE f.password = :password")
-    Optional<Family> findByPassword(@Param("password") String password);
+
     
     @Query("SELECT f FROM Family f JOIN f.parents p WHERE p.id = :parentId")
     List<Family> findByParentId(@Param("parentId") Long parentId);
