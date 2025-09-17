@@ -10,6 +10,7 @@ import java.time.LocalDate;
 @Builder
 @AllArgsConstructor
 public class ChildResponseDTO {
+    private Long id;
     private String name;
     private Boolean gender;
     private LocalDate dateOfBirth;

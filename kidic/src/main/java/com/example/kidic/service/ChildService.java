@@ -3,6 +3,7 @@ package com.example.kidic.service;
 import com.example.kidic.config.JwtService;
 import com.example.kidic.dto.ChildRequestDTO;
 import com.example.kidic.dto.ChildResponseDTO;
+import com.example.kidic.dto.ChildUpdateRequestDTO;
 import com.example.kidic.entity.Child;
 import com.example.kidic.entity.Family;
 import com.example.kidic.repository.ChildRepository;
@@ -20,6 +21,8 @@ public class ChildService {
     private JwtService jwtService;
     @Autowired
     private FamilyRepository familyRepository;
+    @Autowired
+    private FamilyService familyService;
     public ChildResponseDTO create(ChildRequestDTO request, String token) {
         UUID familyId = jwtService.extractFamilyId(token);
 
@@ -30,11 +33,7 @@ public class ChildService {
         Family family = familyRepository.findById(familyId)
                 .orElseThrow(() -> new IllegalArgumentException("Family not found"));
 
-        Child child = new Child();
-        child.setName(request.getName());
-        child.setGender(request.getGender());
-        child.setDateOfBirth(request.getDateOfBirth());
-        child.setFamily(family);
+        Child child = toEntity(request,family);
 
         childRepository.save(child);
         ChildResponseDTO response = toResponseDTO(child);
@@ -54,6 +53,7 @@ public class ChildService {
     // Entity -> ResponseDTO
     public static ChildResponseDTO toResponseDTO(Child child) {
         return ChildResponseDTO.builder()
+                .id(child.getId())
                 .name(child.getName())
                 .gender(child.getGender())
                 .dateOfBirth(child.getDateOfBirth())
@@ -61,4 +61,42 @@ public class ChildService {
                 .build();
     }
 
+    public String delete(Long childId, String token) {
+        UUID familyId = jwtService.extractFamilyId(token);
+
+        Child child = childRepository.findById(childId)
+                .orElseThrow(() -> new IllegalArgumentException("Child not found"));
+
+        if (!familyService.isChildMember(familyId, child)) {
+            throw new IllegalArgumentException("Child does not belong to any family");
+        }
+
+        familyService.deleteChild(familyId,child);
+        childRepository.delete(child);
+        return "Child deleted";
+    }
+
+    public ChildResponseDTO update(Long childId, ChildUpdateRequestDTO requestDTO, String token) {
+        System.out.println(requestDTO);
+        UUID familyId = jwtService.extractFamilyId(token);
+        Child child = childRepository.findById(childId)
+                .orElseThrow(() -> new IllegalArgumentException("Child not found"));
+
+        if (!familyService.isChildMember(familyId, child)) {
+            throw new IllegalArgumentException("Child does not belong to any family");
+        }
+        if (requestDTO.getName() != null) {
+            child.setName(requestDTO.getName());
+        }
+
+        if (requestDTO.getDateOfBirth() != null) {
+            child.setDateOfBirth(requestDTO.getDateOfBirth());
+        }
+        if (requestDTO.getMedicalNotes() != null) {
+            child.setMedicalNotes(requestDTO.getMedicalNotes());
+        }
+        childRepository.save(child);
+        ChildResponseDTO response = toResponseDTO(child);
+        return response;
+    }
 }

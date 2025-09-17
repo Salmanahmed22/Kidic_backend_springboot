@@ -1,5 +1,6 @@
 package com.example.kidic.service;
 
+import com.example.kidic.entity.Child;
 import com.example.kidic.entity.Family;
 import com.example.kidic.entity.Parent;
 import com.example.kidic.repository.FamilyRepository;
@@ -39,5 +40,18 @@ public class FamilyService {
 
     public Family getFamilyById(UUID familyId) {
         return familyRepository.findById(familyId).orElse(null);
+    }
+
+    public void deleteChild(UUID familyId, Child child) {
+        Family family = familyRepository.findById(familyId)
+                .orElseThrow(() -> new IllegalArgumentException("Family not found"));
+        family.getChildren().remove(child);
+        familyRepository.save(family);
+    }
+
+    public boolean isChildMember(UUID familyId, Child child) {
+        Family family = familyRepository.findById(familyId)
+                .orElseThrow(() -> new IllegalArgumentException("Family not found"));
+        return family.getChildren().contains(child);
     }
 }
