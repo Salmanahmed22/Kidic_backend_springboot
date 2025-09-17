@@ -1,5 +1,9 @@
 package com.example.kidic.service;
 
+import com.example.kidic.config.JwtService;
+import com.example.kidic.dto.ChildResponseDTO;
+import com.example.kidic.dto.FamilyResponseDTO;
+import com.example.kidic.dto.ParentResonseDTO;
 import com.example.kidic.entity.Child;
 import com.example.kidic.entity.Family;
 import com.example.kidic.entity.Parent;
@@ -8,6 +12,8 @@ import com.example.kidic.repository.ParentRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.util.ArrayList;
+import java.util.List;
 import java.util.UUID;
 
 @Service
@@ -16,6 +22,9 @@ public class FamilyService {
     private FamilyRepository familyRepository;
     @Autowired
     private ParentRepository parentRepository;
+    @Autowired
+    private JwtService jwtService;
+
 
     public Family createFamily() {
         System.out.println("new family got created");
@@ -53,5 +62,35 @@ public class FamilyService {
         Family family = familyRepository.findById(familyId)
                 .orElseThrow(() -> new IllegalArgumentException("Family not found"));
         return family.getChildren().contains(child);
+    }
+
+    public FamilyResponseDTO getFamily(String token) {
+        UUID familyId = jwtService.extractFamilyId(token);
+        Family family = familyRepository.findById(familyId)
+                .orElseThrow(() -> new IllegalArgumentException("Family not found"));
+
+        List<ChildResponseDTO> children = new ArrayList<>();
+        List<ParentResonseDTO> parents = new ArrayList<>();
+        family.getChildren().forEach(child -> {
+            ChildResponseDTO responseDTO = ChildService.toResponseDTO(child);
+            children.add(responseDTO);
+        });
+        family.getParents().forEach(parent -> {
+            ParentResonseDTO responseDTO = ParentResonseDTO.builder()
+                    .id(parent.getId())
+                    .name(parent.getName())
+                    .email(parent.getEmail())
+                    .phone(parent.getPhone())
+                    .gender(parent.getGender())
+                    .build();
+            parents.add(responseDTO);
+        });
+
+        FamilyResponseDTO response = FamilyResponseDTO.builder()
+                .children(children)
+                .parents(parents)
+                .build();
+
+        return response;
     }
 }

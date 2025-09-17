@@ -13,7 +13,12 @@ import org.springframework.web.bind.annotation.*;
 public class ChildController {
     @Autowired
     private ChildService childService;
-
+    @GetMapping("{id}")
+    public ResponseEntity<ChildResponseDTO> getChild(@PathVariable Long id
+            , @RequestHeader("Authorization") String authHeader) {
+        String token = authHeader.replace("Bearer ", "");
+        return ResponseEntity.ok(childService.getChild(id,token));
+    }
     @PostMapping
     public ResponseEntity<ChildResponseDTO> create(
             @RequestBody ChildRequestDTO child,

@@ -23,6 +23,7 @@ public class ChildService {
     private FamilyRepository familyRepository;
     @Autowired
     private FamilyService familyService;
+
     public ChildResponseDTO create(ChildRequestDTO request, String token) {
         UUID familyId = jwtService.extractFamilyId(token);
 
@@ -36,8 +37,7 @@ public class ChildService {
         Child child = toEntity(request,family);
 
         childRepository.save(child);
-        ChildResponseDTO response = toResponseDTO(child);
-        return response;
+        return toResponseDTO(child);
     }
 
     public static Child toEntity(ChildRequestDTO dto, Family family) {
@@ -96,7 +96,16 @@ public class ChildService {
             child.setMedicalNotes(requestDTO.getMedicalNotes());
         }
         childRepository.save(child);
-        ChildResponseDTO response = toResponseDTO(child);
-        return response;
+        return toResponseDTO(child);
+    }
+
+    public ChildResponseDTO getChild(Long id, String token) {
+        UUID familyId = jwtService.extractFamilyId(token);
+        Child child = childRepository.findById(id)
+                .orElseThrow(() -> new IllegalArgumentException("Child not found"));
+        if (familyService.isChildMember(familyId, child)) {
+            throw new IllegalArgumentException("Child does not belong this family");
+        }
+        return toResponseDTO(child);
     }
 }
