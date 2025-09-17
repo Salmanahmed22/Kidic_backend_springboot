@@ -7,7 +7,6 @@ import jakarta.validation.constraints.Size;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 
-import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
 
@@ -39,8 +38,22 @@ public class Parent implements UserDetails {
     private String password; // Hashed String
     
     @Enumerated(EnumType.STRING)
-    @Column(name = "profile_picture")
-    private ProfilePictureType profilePicture;
+    @Column(name = "profile_picture_type")
+    private ProfilePictureType profilePictureType;
+    
+    @Size(max = 500)
+    @Column(name = "profile_picture_name")
+    private String profilePictureName;
+    
+    @Column(name = "profile_picture_content", columnDefinition = "LONGBLOB")
+    private byte[] profilePictureContent;
+    
+    @Column(name = "profile_picture_size")
+    private Long profilePictureSize;
+    
+    @Size(max = 100)
+    @Column(name = "profile_picture_content_type")
+    private String profilePictureContentType;
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "family_id", nullable = true)
@@ -108,12 +121,44 @@ public class Parent implements UserDetails {
         this.password = password;
     }
     
-    public ProfilePictureType getProfilePicture() {
-        return profilePicture;
+    public ProfilePictureType getProfilePictureType() {
+        return profilePictureType;
     }
     
-    public void setProfilePicture(ProfilePictureType profilePicture) {
-        this.profilePicture = profilePicture;
+    public void setProfilePictureType(ProfilePictureType profilePictureType) {
+        this.profilePictureType = profilePictureType;
+    }
+    
+    public String getProfilePictureName() {
+        return profilePictureName;
+    }
+    
+    public void setProfilePictureName(String profilePictureName) {
+        this.profilePictureName = profilePictureName;
+    }
+    
+    public byte[] getProfilePictureContent() {
+        return profilePictureContent;
+    }
+    
+    public void setProfilePictureContent(byte[] profilePictureContent) {
+        this.profilePictureContent = profilePictureContent;
+    }
+    
+    public Long getProfilePictureSize() {
+        return profilePictureSize;
+    }
+    
+    public void setProfilePictureSize(Long profilePictureSize) {
+        this.profilePictureSize = profilePictureSize;
+    }
+    
+    public String getProfilePictureContentType() {
+        return profilePictureContentType;
+    }
+    
+    public void setProfilePictureContentType(String profilePictureContentType) {
+        this.profilePictureContentType = profilePictureContentType;
     }
 
     public Family getFamily() {

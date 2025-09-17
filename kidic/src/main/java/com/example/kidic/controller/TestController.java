@@ -110,7 +110,7 @@ public class TestController {
     public ResponseEntity<String> createTestParent() {
         try {
             Parent testParent = new Parent("Test Parent", "1234567890", "test@email.com", true, "password123");
-            testParent.setProfilePicture(Parent.ProfilePictureType.DEFAULT);
+            testParent.setProfilePictureType(Parent.ProfilePictureType.DEFAULT);
             parentRepository.save(testParent);
             return ResponseEntity.ok("Test parent created successfully! ID: " + testParent.getId());
         } catch (Exception e) {
