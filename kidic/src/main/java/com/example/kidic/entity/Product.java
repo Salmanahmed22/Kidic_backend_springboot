@@ -26,7 +26,22 @@ public class Product {
     private String description; // Note: keeping as "description" despite typo in ERD
     
     @Enumerated(EnumType.STRING)
-    private ImageType image;
+    @Column(name = "image_type")
+    private ImageType imageType;
+    
+    @Size(max = 500)
+    @Column(name = "image_name")
+    private String imageName;
+    
+    @Column(name = "image_content", columnDefinition = "LONGBLOB")
+    private byte[] imageContent;
+    
+    @Column(name = "image_size")
+    private Long imageSize;
+    
+    @Size(max = 100)
+    @Column(name = "image_content_type")
+    private String imageContentType;
     
     @Enumerated(EnumType.STRING)
     private CategoryType category;
@@ -37,11 +52,11 @@ public class Product {
     // Constructors
     public Product() {}
     
-    public Product(String name, String link, String description, ImageType image, CategoryType category) {
+    public Product(String name, String link, String description, ImageType imageType, CategoryType category) {
         this.name = name;
         this.link = link;
         this.description = description;
-        this.image = image;
+        this.imageType = imageType;
         this.category = category;
     }
     
@@ -78,12 +93,44 @@ public class Product {
         this.description = description;
     }
     
-    public ImageType getImage() {
-        return image;
+    public ImageType getImageType() {
+        return imageType;
     }
     
-    public void setImage(ImageType image) {
-        this.image = image;
+    public void setImageType(ImageType imageType) {
+        this.imageType = imageType;
+    }
+    
+    public String getImageName() {
+        return imageName;
+    }
+    
+    public void setImageName(String imageName) {
+        this.imageName = imageName;
+    }
+    
+    public byte[] getImageContent() {
+        return imageContent;
+    }
+    
+    public void setImageContent(byte[] imageContent) {
+        this.imageContent = imageContent;
+    }
+    
+    public Long getImageSize() {
+        return imageSize;
+    }
+    
+    public void setImageSize(Long imageSize) {
+        this.imageSize = imageSize;
+    }
+    
+    public String getImageContentType() {
+        return imageContentType;
+    }
+    
+    public void setImageContentType(String imageContentType) {
+        this.imageContentType = imageContentType;
     }
     
     public CategoryType getCategory() {

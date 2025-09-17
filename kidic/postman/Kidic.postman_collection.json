@@ -1,0 +1,226 @@
+{
+    "info": {
+        "name": "Kidic API",
+        "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
+        "_postman_id": "a4d2b9b0-0000-4000-8000-000000000001"
+    },
+    "item": [{
+            "name": "Test",
+            "item": [{
+                    "name": "DB Status",
+                    "request": {
+                        "method": "GET",
+                        "url": "{{baseUrl}}/api/test/database"
+                    }
+                },
+                {
+                    "name": "Init Data",
+                    "request": {
+                        "method": "POST",
+                        "url": "{{baseUrl}}/api/test/init-data"
+                    }
+                }
+            ]
+        },
+        {
+            "name": "Products",
+            "item": [{
+                    "name": "List Products",
+                    "request": {
+                        "method": "GET",
+                        "url": "{{baseUrl}}/api/products"
+                    }
+                },
+                {
+                    "name": "Create Product",
+                    "request": {
+                        "method": "POST",
+                        "header": [
+                            { "key": "Content-Type", "value": "application/json" }
+                        ],
+                        "body": {
+                            "mode": "raw",
+                            "raw": "{\n  \"name\": \"Toy A\",\n  \"link\": \"https://example.com\",\n  \"description\": \"Nice toy\",\n  \"imageType\": \"IMAGE_1\",\n  \"category\": \"TOYS\"\n}"
+                        },
+                        "url": "{{baseUrl}}/api/products"
+                    }
+                },
+                {
+                    "name": "Get Product",
+                    "request": {
+                        "method": "GET",
+                        "url": "{{baseUrl}}/api/products/{{productId}}"
+                    }
+                },
+                {
+                    "name": "Update Product",
+                    "request": {
+                        "method": "PUT",
+                        "header": [
+                            { "key": "Content-Type", "value": "application/json" }
+                        ],
+                        "body": {
+                            "mode": "raw",
+                            "raw": "{\n  \"name\": \"Toy A Updated\",\n  \"link\": \"https://example.com/a\",\n  \"description\": \"Updated\",\n  \"imageType\": \"IMAGE_2\",\n  \"category\": \"EDUCATIONAL\"\n}"
+                        },
+                        "url": "{{baseUrl}}/api/products/{{productId}}"
+                    }
+                },
+                {
+                    "name": "Delete Product",
+                    "request": {
+                        "method": "DELETE",
+                        "url": "{{baseUrl}}/api/products/{{productId}}"
+                    }
+                },
+                {
+                    "name": "Upload Product Image",
+                    "request": {
+                        "method": "POST",
+                        "header": [
+                            { "key": "Content-Type", "value": "multipart/form-data" }
+                        ],
+                        "body": {
+                            "mode": "formdata",
+                            "formdata": [
+                                { "key": "file", "type": "file", "src": [] }
+                            ]
+                        },
+                        "url": "{{baseUrl}}/api/products/{{productId}}/image"
+                    }
+                },
+                {
+                    "name": "Get Product Image",
+                    "request": {
+                        "method": "GET",
+                        "url": "{{baseUrl}}/api/products/{{productId}}/image"
+                    }
+                },
+                {
+                    "name": "Delete Product Image",
+                    "request": {
+                        "method": "DELETE",
+                        "url": "{{baseUrl}}/api/products/{{productId}}/image"
+                    }
+                }
+            ]
+        },
+        {
+            "name": "Medical Records",
+            "item": [{
+                    "name": "Add Medical Record (JSON)",
+                    "request": {
+                        "method": "POST",
+                        "header": [{ "key": "Content-Type", "value": "application/json" }],
+                        "body": {
+                            "mode": "raw",
+                            "raw": "{\n  \"type\": \"CHECKUP\",\n  \"dateOfRecord\": \"2025-01-01\",\n  \"description\": \"Routine\",\n  \"status\": \"ACTIVE\"\n}"
+                        },
+                        "url": "{{baseUrl}}/api/medical-records/children/{{childId}}"
+                    }
+                },
+                {
+                    "name": "Add Medical Record With File",
+                    "request": {
+                        "method": "POST",
+                        "header": [{ "key": "Content-Type", "value": "multipart/form-data" }],
+                        "body": {
+                            "mode": "formdata",
+                            "formdata": [
+                                { "key": "type", "value": "CHECKUP", "type": "text" },
+                                { "key": "dateOfRecord", "value": "2025-01-01", "type": "text" },
+                                { "key": "description", "value": "Routine", "type": "text" },
+                                { "key": "status", "value": "ACTIVE", "type": "text" },
+                                { "key": "file", "type": "file", "src": [] }
+                            ]
+                        },
+                        "url": "{{baseUrl}}/api/medical-records/children/{{childId}}/with-file"
+                    }
+                },
+                {
+                    "name": "Download Medical Record File",
+                    "request": {
+                        "method": "GET",
+                        "url": "{{baseUrl}}/api/medical-records/children/{{childId}}/{{recordId}}/file"
+                    }
+                },
+                {
+                    "name": "Upload/Replace File (by ID)",
+                    "request": {
+                        "method": "POST",
+                        "header": [{ "key": "Content-Type", "value": "multipart/form-data" }],
+                        "body": {
+                            "mode": "formdata",
+                            "formdata": [{ "key": "file", "type": "file", "src": [] }]
+                        },
+                        "url": "{{baseUrl}}/api/medical-records/{{recordId}}/file"
+                    }
+                },
+                {
+                    "name": "Delete File (by ID)",
+                    "request": {
+                        "method": "DELETE",
+                        "url": "{{baseUrl}}/api/medical-records/{{recordId}}/file"
+                    }
+                }
+            ]
+        },
+        {
+            "name": "Growth Records",
+            "item": [{
+                    "name": "List for Child",
+                    "request": { "method": "GET", "url": "{{baseUrl}}/api/growth-records/children/{{childId}}" }
+                },
+                {
+                    "name": "Add for Child",
+                    "request": {
+                        "method": "POST",
+                        "header": [{ "key": "Content-Type", "value": "application/x-www-form-urlencoded" }],
+                        "body": {
+                            "mode": "urlencoded",
+                            "urlencoded": [
+                                { "key": "additionalInfo", "value": "Good progress" },
+                                { "key": "dateOfRecord", "value": "2025-01-02" },
+                                { "key": "height", "value": "100" },
+                                { "key": "weight", "value": "15" },
+                                { "key": "type", "value": "PHYSICAL" },
+                                { "key": "status", "value": "ACHIEVED" }
+                            ]
+                        },
+                        "url": "{{baseUrl}}/api/growth-records/children/{{childId}}"
+                    }
+                },
+                {
+                    "name": "Edit for Child",
+                    "request": {
+                        "method": "PUT",
+                        "header": [{ "key": "Content-Type", "value": "application/x-www-form-urlencoded" }],
+                        "body": {
+                            "mode": "urlencoded",
+                            "urlencoded": [
+                                { "key": "additionalInfo", "value": "Updated info" },
+                                { "key": "dateOfRecord", "value": "2025-01-03" },
+                                { "key": "height", "value": "101" },
+                                { "key": "weight", "value": "15.2" },
+                                { "key": "type", "value": "PHYSICAL" },
+                                { "key": "status", "value": "ACHIEVED" }
+                            ]
+                        },
+                        "url": "{{baseUrl}}/api/growth-records/children/{{childId}}/{{growthRecordId}}"
+                    }
+                },
+                {
+                    "name": "Delete for Child",
+                    "request": { "method": "DELETE", "url": "{{baseUrl}}/api/growth-records/children/{{childId}}/{{growthRecordId}}" }
+                }
+            ]
+        }
+    ],
+    "variable": [
+        { "key": "baseUrl", "value": "http://localhost:8080" },
+        { "key": "productId", "value": "1" },
+        { "key": "childId", "value": "1" },
+        { "key": "recordId", "value": "1" },
+        { "key": "growthRecordId", "value": "1" }
+    ]
+}

@@ -64,37 +64,29 @@ public class DataInitializer implements CommandLineRunner {
     private void initializeData() {
         try {
 
-            // Create Families
-            Family family1 = new Family();
-            family1.setId(UUID.fromString("550e8400-e29b-41d4-a716-446655440001"));
-
-            Family family2 = new Family();
-            family2.setId(UUID.fromString("550e8400-e29b-41d4-a716-446655440002"));
-
-            familyRepository.saveAll(Arrays.asList(family1, family2));
+            // Create Families (let JPA generate IDs to avoid optimistic locking issues)
+            Family family1 = familyRepository.save(new Family());
+            Family family2 = familyRepository.save(new Family());
 
             System.out.println("👨‍👩‍👧‍👦 Creating parents...");
             // Create Parents
             Parent parent1 = new Parent("John Smith", "1234567890", "john.smith@email.com", true,
                     "$2a$10$N.zmdr9k7uOCQb376NoUnuTJ8iAt6Z5EHsM8lE9lBOsl7iKTVEFDi");
-            parent1.setProfilePicture(Parent.ProfilePictureType.DEFAULT);
+            parent1.setProfilePictureType(Parent.ProfilePictureType.DEFAULT);
             parent1.setFamily(family1);
 
             Parent parent2 = new Parent("Jane Smith", "1234567891", "jane.smith@email.com", false,
                     "$2a$10$N.zmdr9k7uOCQb376NoUnuTJ8iAt6Z5EHsM8lE9lBOsl7iKTVEFDi");
-            parent2.setProfilePicture(Parent.ProfilePictureType.AVATAR_1);
+            parent2.setProfilePictureType(Parent.ProfilePictureType.AVATAR_1);
             parent2.setFamily(family1);
 
             Parent parent3 = new Parent("Mike Johnson", "1234567892", "mike.johnson@email.com", true,
                     "$2a$10$N.zmdr9k7uOCQb376NoUnuTJ8iAt6Z5EHsM8lE9lBOsl7iKTVEFDi");
-            parent3.setProfilePicture(Parent.ProfilePictureType.CUSTOM);
+            parent3.setProfilePictureType(Parent.ProfilePictureType.CUSTOM);
             parent3.setFamily(family2);
+            // Persist parents separately (owning side), no need to resave families
+            parentRepository.saveAll(Arrays.asList(parent1, parent2, parent3));
             System.out.println("✅ Parents created successfully");
-
-        // Add parents to families
-        family1.getParents().addAll(Arrays.asList(parent1, parent2));
-        family2.getParents().add(parent3);
-        familyRepository.saveAll(Arrays.asList(family1, family2));
 
         // Create Children
         Child child1 = new Child("Emma Smith", false, LocalDate.of(2020, 5, 15), null, family1);
