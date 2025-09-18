@@ -1,34 +1,336 @@
 {
     "info": {
         "name": "Kidic API",
-        "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
-        "_postman_id": "a4d2b9b0-0000-4000-8000-000000000001"
+        "_postman_id": "kidic-api-collection",
+        "description": "Postman collection for Kidic backend APIs with sample request bodies.",
+        "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
     },
-    "item": [{
-            "name": "Test",
-            "item": [{
-                    "name": "DB Status",
+    "variable": [
+        { "key": "baseUrl", "value": "http://localhost:8080/api" },
+        { "key": "token", "value": "" }
+    ],
+    "item": [
+        {
+            "name": "Auth",
+            "item": [
+                {
+                    "name": "Sign Up (New Family)",
+                    "request": {
+                        "method": "POST",
+                        "header": [{ "key": "Content-Type", "value": "application/json" }],
+                        "url": { "raw": "{{baseUrl}}/auth/signup/new-family", "host": ["{{baseUrl}}"], "path": ["auth", "signup", "new-family"] },
+                        "body": {
+                            "mode": "raw",
+                            "raw": "{\n  \"name\": \"Parent Name\",\n  \"phone\": \"1234567890\",\n  \"email\": \"parent@example.com\",\n  \"gender\": true,\n  \"password\": \"yourpassword\"\n}"
+                        }
+                    },
+                    "event": [
+                        {
+                            "listen": "test",
+                            "script": {
+                                "exec": [
+                                    "var json = pm.response.json();",
+                                    "if(json.token){",
+                                    "    pm.collectionVariables.set('token', json.token);",
+                                    "}"
+                                ],
+                                "type": "text/javascript"
+                            }
+                        }
+                    ]
+                },
+                {
+                    "name": "Sign Up (Existing Family)",
+                    "request": {
+                        "method": "POST",
+                        "header": [{ "key": "Content-Type", "value": "application/json" }],
+                        "url": { "raw": "{{baseUrl}}/auth/signup/existing-family", "host": ["{{baseUrl}}"], "path": ["auth", "signup", "existing-family"] },
+                        "body": {
+                            "mode": "raw",
+                            "raw": "{\n  \"name\": \"Parent Name\",\n  \"phone\": \"1234567890\",\n  \"email\": \"parent@example.com\",\n  \"gender\": true,\n  \"password\": \"yourpassword\",\n  \"familyId\": \"123e4567-e89b-12d3-a456-426614174000\"\n}"
+                        }
+                    },
+                    "event": [
+                        {
+                            "listen": "test",
+                            "script": {
+                                "exec": [
+                                    "var json = pm.response.json();",
+                                    "if(json.token){",
+                                    "    pm.collectionVariables.set('token', json.token);",
+                                    "}"
+                                ],
+                                "type": "text/javascript"
+                            }
+                        }
+                    ]
+                },
+                {
+                    "name": "Login",
+                    "request": {
+                        "method": "POST",
+                        "header": [{ "key": "Content-Type", "value": "application/json" }],
+                        "url": { "raw": "{{baseUrl}}/auth/login", "host": ["{{baseUrl}}"], "path": ["auth", "login"] },
+                        "body": {
+                            "mode": "raw",
+                            "raw": "{\n  \"email\": \"parent@example.com\",\n  \"password\": \"yourpassword\"\n}"
+                        }
+                    },
+                    "event": [
+                        {
+                            "listen": "test",
+                            "script": {
+                                "exec": [
+                                    "var json = pm.response.json();",
+                                    "if(json.token){",
+                                    "    pm.collectionVariables.set('token', json.token);",
+                                    "}"
+                                ],
+                                "type": "text/javascript"
+                            }
+                        }
+                    ]
+                }
+            ]
+        },
+        {
+            "name": "Parent",
+            "item": [
+                {
+                    "name": "Get Parent",
                     "request": {
                         "method": "GET",
-                        "url": "{{baseUrl}}/api/test/database"
+                        "header": [{ "key": "Authorization", "value": "Bearer {{token}}" }],
+                        "url": { "raw": "{{baseUrl}}/parent", "host": ["{{baseUrl}}"], "path": ["parent"] }
                     }
                 },
                 {
-                    "name": "Init Data",
+                    "name": "Update Parent",
                     "request": {
-                        "method": "POST",
-                        "url": "{{baseUrl}}/api/test/init-data"
+                        "method": "PUT",
+                        "header": [
+                            { "key": "Authorization", "value": "Bearer {{token}}" },
+                            { "key": "Content-Type", "value": "application/json" }
+                        ],
+                        "url": { "raw": "{{baseUrl}}/parent", "host": ["{{baseUrl}}"], "path": ["parent"] },
+                        "body": {
+                            "mode": "raw",
+                            "raw": "{\n  \"name\": \"Updated Parent Name\",\n  \"phone\": \"0987654321\",\n  \"gender\": true,\n  \"profilePictureType\": \"AVATAR\",\n  \"profilePictureName\": \"avatar.png\",\n  \"profilePictureContent\": null,\n  \"profilePictureSize\": 12345,\n  \"profilePictureContentType\": \"image/png\"\n}"
+                        }
                     }
                 }
             ]
         },
         {
-            "name": "Products",
-            "item": [{
+            "name": "Child",
+            "item": [
+                {
+                    "name": "Get Child",
+                    "request": {
+                        "method": "GET",
+                        "header": [{ "key": "Authorization", "value": "Bearer {{token}}" }],
+                        "url": { "raw": "{{baseUrl}}/child/1", "host": ["{{baseUrl}}"], "path": ["child", "1"] }
+                    }
+                },
+                {
+                    "name": "Create Child",
+                    "request": {
+                        "method": "POST",
+                        "header": [
+                            { "key": "Authorization", "value": "Bearer {{token}}" },
+                            { "key": "Content-Type", "value": "application/json" }
+                        ],
+                        "url": { "raw": "{{baseUrl}}/child", "host": ["{{baseUrl}}"], "path": ["child"] },
+                        "body": {
+                            "mode": "raw",
+                            "raw": "{\n  \"name\": \"Child Name\",\n  \"gender\": true,\n  \"dateOfBirth\": \"2018-05-10\",\n  \"medicalNotes\": \"Some notes here\"\n}"
+                        }
+                    }
+                },
+                {
+                    "name": "Update Child",
+                    "request": {
+                        "method": "PUT",
+                        "header": [
+                            { "key": "Authorization", "value": "Bearer {{token}}" },
+                            { "key": "Content-Type", "value": "application/json" }
+                        ],
+                        "url": { "raw": "{{baseUrl}}/child/1", "host": ["{{baseUrl}}"], "path": ["child", "1"] },
+                        "body": {
+                            "mode": "raw",
+                            "raw": "{\n  \"name\": \"Updated Child Name\",\n  \"dateOfBirth\": \"2018-05-10\",\n  \"medicalNotes\": \"Updated notes\"\n}"
+                        }
+                    }
+                },
+                {
+                    "name": "Delete Child",
+                    "request": {
+                        "method": "DELETE",
+                        "header": [{ "key": "Authorization", "value": "Bearer {{token}}" }],
+                        "url": { "raw": "{{baseUrl}}/child/1", "host": ["{{baseUrl}}"], "path": ["child", "1"] }
+                    }
+                }
+            ]
+        },
+        {
+            "name": "GrowthRecord",
+            "item": [
+                {
+                    "name": "List Growth Records for Child",
+                    "request": {
+                        "method": "GET",
+                        "header": [{ "key": "Authorization", "value": "Bearer {{token}}" }],
+                        "url": { "raw": "{{baseUrl}}/growth-records/children/1", "host": ["{{baseUrl}}"], "path": ["growth-records", "children", "1"] }
+                    }
+                },
+                {
+                    "name": "Add Growth Record for Child",
+                    "request": {
+                        "method": "POST",
+                        "header": [{ "key": "Authorization", "value": "Bearer {{token}}" }],
+                        "url": { "raw": "{{baseUrl}}/growth-records/children/1", "host": ["{{baseUrl}}"], "path": ["growth-records", "children", "1"] },
+                        "body": {
+                            "mode": "formdata",
+                            "formdata": [
+                                { "key": "dateOfRecord", "value": "2024-01-01", "type": "text" },
+                                { "key": "type", "value": "HEIGHT", "type": "text" },
+                                { "key": "status", "value": "NORMAL", "type": "text" }
+                            ]
+                        }
+                    }
+                },
+                {
+                    "name": "Edit Growth Record for Child",
+                    "request": {
+                        "method": "PUT",
+                        "header": [{ "key": "Authorization", "value": "Bearer {{token}}" }],
+                        "url": { "raw": "{{baseUrl}}/growth-records/children/1/1", "host": ["{{baseUrl}}"], "path": ["growth-records", "children", "1", "1"] },
+                        "body": {
+                            "mode": "formdata",
+                            "formdata": [
+                                { "key": "dateOfRecord", "value": "2024-01-01", "type": "text" }
+                            ]
+                        }
+                    }
+                },
+                {
+                    "name": "Delete Growth Record for Child",
+                    "request": {
+                        "method": "DELETE",
+                        "header": [{ "key": "Authorization", "value": "Bearer {{token}}" }],
+                        "url": { "raw": "{{baseUrl}}/growth-records/children/1/1", "host": ["{{baseUrl}}"], "path": ["growth-records", "children", "1", "1"] }
+                    }
+                }
+            ]
+        },
+        {
+            "name": "MedicalRecord",
+            "item": [
+                {
+                    "name": "Add Medical Record",
+                    "request": {
+                        "method": "POST",
+                        "header": [
+                            { "key": "Authorization", "value": "Bearer {{token}}" },
+                            { "key": "Content-Type", "value": "application/json" }
+                        ],
+                        "url": { "raw": "{{baseUrl}}/medical-records/children/1", "host": ["{{baseUrl}}"], "path": ["medical-records", "children", "1"] },
+                        "body": {
+                            "mode": "raw",
+                            "raw": "{\n  \"type\": \"VACCINE\",\n  \"dateOfRecord\": \"2024-01-01\",\n  \"description\": \"Routine vaccination\",\n  \"file\": null,\n  \"status\": \"NORMAL\"\n}"
+                        }
+                    }
+                },
+                {
+                    "name": "Get Medical Records for Child",
+                    "request": {
+                        "method": "GET",
+                        "header": [{ "key": "Authorization", "value": "Bearer {{token}}" }],
+                        "url": { "raw": "{{baseUrl}}/medical-records/children/1", "host": ["{{baseUrl}}"], "path": ["medical-records", "children", "1"] }
+                    }
+                },
+                {
+                    "name": "Get Medical Record",
+                    "request": {
+                        "method": "GET",
+                        "header": [{ "key": "Authorization", "value": "Bearer {{token}}" }],
+                        "url": { "raw": "{{baseUrl}}/medical-records/children/1/1", "host": ["{{baseUrl}}"], "path": ["medical-records", "children", "1", "1"] }
+                    }
+                },
+                {
+                    "name": "Edit Medical Record",
+                    "request": {
+                        "method": "PUT",
+                        "header": [
+                            { "key": "Authorization", "value": "Bearer {{token}}" },
+                            { "key": "Content-Type", "value": "application/json" }
+                        ],
+                        "url": { "raw": "{{baseUrl}}/medical-records/children/1/1", "host": ["{{baseUrl}}"], "path": ["medical-records", "children", "1", "1"] },
+                        "body": {
+                            "mode": "raw",
+                            "raw": "{\n  \"type\": \"VACCINE\",\n  \"dateOfRecord\": \"2024-01-01\",\n  \"description\": \"Routine vaccination\",\n  \"file\": null,\n  \"status\": \"NORMAL\"\n}"
+                        }
+                    }
+                },
+                {
+                    "name": "Delete Medical Record",
+                    "request": {
+                        "method": "DELETE",
+                        "header": [{ "key": "Authorization", "value": "Bearer {{token}}" }],
+                        "url": { "raw": "{{baseUrl}}/medical-records/children/1/1", "host": ["{{baseUrl}}"], "path": ["medical-records", "children", "1", "1"] }
+                    }
+                },
+                {
+                    "name": "Add Medical Record With File",
+                    "request": {
+                        "method": "POST",
+                        "header": [{ "key": "Authorization", "value": "Bearer {{token}}" }],
+                        "url": { "raw": "{{baseUrl}}/medical-records/children/1/with-file", "host": ["{{baseUrl}}"], "path": ["medical-records", "children", "1", "with-file"] },
+                        "body": {
+                            "mode": "formdata",
+                            "formdata": [
+                                { "key": "type", "value": "VACCINE", "type": "text" },
+                                { "key": "dateOfRecord", "value": "2024-01-01", "type": "text" },
+                                { "key": "file", "type": "file" }
+                            ]
+                        }
+                    }
+                },
+                {
+                    "name": "Edit Medical Record With File",
+                    "request": {
+                        "method": "PUT",
+                        "header": [{ "key": "Authorization", "value": "Bearer {{token}}" }],
+                        "url": { "raw": "{{baseUrl}}/medical-records/children/1/1/with-file", "host": ["{{baseUrl}}"], "path": ["medical-records", "children", "1", "1", "with-file"] },
+                        "body": {
+                            "mode": "formdata",
+                            "formdata": [
+                                { "key": "type", "value": "VACCINE", "type": "text" },
+                                { "key": "dateOfRecord", "value": "2024-01-01", "type": "text" },
+                                { "key": "file", "type": "file" }
+                            ]
+                        }
+                    }
+                },
+                {
+                    "name": "Download Medical Record File",
+                    "request": {
+                        "method": "GET",
+                        "header": [{ "key": "Authorization", "value": "Bearer {{token}}" }],
+                        "url": { "raw": "{{baseUrl}}/medical-records/children/1/1/file", "host": ["{{baseUrl}}"], "path": ["medical-records", "children", "1", "1", "file"] }
+                    }
+                }
+            ]
+        },
+        {
+            "name": "Product",
+            "item": [
+                {
                     "name": "List Products",
                     "request": {
                         "method": "GET",
-                        "url": "{{baseUrl}}/api/products"
+                        "header": [{ "key": "Authorization", "value": "Bearer {{token}}" }],
+                        "url": { "raw": "{{baseUrl}}/products", "host": ["{{baseUrl}}"], "path": ["products"] }
                     }
                 },
                 {
@@ -36,20 +338,14 @@
                     "request": {
                         "method": "POST",
                         "header": [
+                            { "key": "Authorization", "value": "Bearer {{token}}" },
                             { "key": "Content-Type", "value": "application/json" }
                         ],
+                        "url": { "raw": "{{baseUrl}}/products", "host": ["{{baseUrl}}"], "path": ["products"] },
                         "body": {
                             "mode": "raw",
-                            "raw": "{\n  \"name\": \"Toy A\",\n  \"link\": \"https://example.com\",\n  \"description\": \"Nice toy\",\n  \"imageType\": \"IMAGE_1\",\n  \"category\": \"TOYS\"\n}"
-                        },
-                        "url": "{{baseUrl}}/api/products"
-                    }
-                },
-                {
-                    "name": "Get Product",
-                    "request": {
-                        "method": "GET",
-                        "url": "{{baseUrl}}/api/products/{{productId}}"
+                            "raw": "{\n  \"name\": \"Product Name\",\n  \"link\": \"https://example.com/product\",\n  \"description\": \"Product description\",\n  \"imageType\": \"IMAGE\",\n  \"category\": \"TOY\"\n}"
+                        }
                     }
                 },
                 {
@@ -57,170 +353,61 @@
                     "request": {
                         "method": "PUT",
                         "header": [
+                            { "key": "Authorization", "value": "Bearer {{token}}" },
                             { "key": "Content-Type", "value": "application/json" }
                         ],
+                        "url": { "raw": "{{baseUrl}}/products/1", "host": ["{{baseUrl}}"], "path": ["products", "1"] },
                         "body": {
                             "mode": "raw",
-                            "raw": "{\n  \"name\": \"Toy A Updated\",\n  \"link\": \"https://example.com/a\",\n  \"description\": \"Updated\",\n  \"imageType\": \"IMAGE_2\",\n  \"category\": \"EDUCATIONAL\"\n}"
-                        },
-                        "url": "{{baseUrl}}/api/products/{{productId}}"
+                            "raw": "{\n  \"name\": \"Updated Product Name\",\n  \"link\": \"https://example.com/product\",\n  \"description\": \"Updated description\",\n  \"imageType\": \"IMAGE\",\n  \"category\": \"TOY\"\n}"
+                        }
                     }
                 },
                 {
                     "name": "Delete Product",
                     "request": {
                         "method": "DELETE",
-                        "url": "{{baseUrl}}/api/products/{{productId}}"
+                        "header": [{ "key": "Authorization", "value": "Bearer {{token}}" }],
+                        "url": { "raw": "{{baseUrl}}/products/1", "host": ["{{baseUrl}}"], "path": ["products", "1"] }
                     }
                 },
                 {
                     "name": "Upload Product Image",
                     "request": {
                         "method": "POST",
-                        "header": [
-                            { "key": "Content-Type", "value": "multipart/form-data" }
-                        ],
+                        "header": [{ "key": "Authorization", "value": "Bearer {{token}}" }],
+                        "url": { "raw": "{{baseUrl}}/products/1/image", "host": ["{{baseUrl}}"], "path": ["products", "1", "image"] },
                         "body": {
                             "mode": "formdata",
                             "formdata": [
-                                { "key": "file", "type": "file", "src": [] }
+                                { "key": "file", "type": "file" }
                             ]
-                        },
-                        "url": "{{baseUrl}}/api/products/{{productId}}/image"
+                        }
                     }
                 },
                 {
                     "name": "Get Product Image",
                     "request": {
                         "method": "GET",
-                        "url": "{{baseUrl}}/api/products/{{productId}}/image"
+                        "url": { "raw": "{{baseUrl}}/products/1/image", "host": ["{{baseUrl}}"], "path": ["products", "1", "image"] }
                     }
                 },
                 {
                     "name": "Delete Product Image",
                     "request": {
                         "method": "DELETE",
-                        "url": "{{baseUrl}}/api/products/{{productId}}/image"
-                    }
-                }
-            ]
-        },
-        {
-            "name": "Medical Records",
-            "item": [{
-                    "name": "Add Medical Record (JSON)",
-                    "request": {
-                        "method": "POST",
-                        "header": [{ "key": "Content-Type", "value": "application/json" }],
-                        "body": {
-                            "mode": "raw",
-                            "raw": "{\n  \"type\": \"CHECKUP\",\n  \"dateOfRecord\": \"2025-01-01\",\n  \"description\": \"Routine\",\n  \"status\": \"ACTIVE\"\n}"
-                        },
-                        "url": "{{baseUrl}}/api/medical-records/children/{{childId}}"
+                        "header": [{ "key": "Authorization", "value": "Bearer {{token}}" }],
+                        "url": { "raw": "{{baseUrl}}/products/1/image", "host": ["{{baseUrl}}"], "path": ["products", "1", "image"] }
                     }
                 },
                 {
-                    "name": "Add Medical Record With File",
-                    "request": {
-                        "method": "POST",
-                        "header": [{ "key": "Content-Type", "value": "multipart/form-data" }],
-                        "body": {
-                            "mode": "formdata",
-                            "formdata": [
-                                { "key": "type", "value": "CHECKUP", "type": "text" },
-                                { "key": "dateOfRecord", "value": "2025-01-01", "type": "text" },
-                                { "key": "description", "value": "Routine", "type": "text" },
-                                { "key": "status", "value": "ACTIVE", "type": "text" },
-                                { "key": "file", "type": "file", "src": [] }
-                            ]
-                        },
-                        "url": "{{baseUrl}}/api/medical-records/children/{{childId}}/with-file"
-                    }
-                },
-                {
-                    "name": "Download Medical Record File",
+                    "name": "Get Product",
                     "request": {
                         "method": "GET",
-                        "url": "{{baseUrl}}/api/medical-records/children/{{childId}}/{{recordId}}/file"
+                        "url": { "raw": "{{baseUrl}}/products/1", "host": ["{{baseUrl}}"], "path": ["products", "1"] }
                     }
-                },
-                {
-                    "name": "Upload/Replace File (by ID)",
-                    "request": {
-                        "method": "POST",
-                        "header": [{ "key": "Content-Type", "value": "multipart/form-data" }],
-                        "body": {
-                            "mode": "formdata",
-                            "formdata": [{ "key": "file", "type": "file", "src": [] }]
-                        },
-                        "url": "{{baseUrl}}/api/medical-records/{{recordId}}/file"
-                    }
-                },
-                {
-                    "name": "Delete File (by ID)",
-                    "request": {
-                        "method": "DELETE",
-                        "url": "{{baseUrl}}/api/medical-records/{{recordId}}/file"
-                    }
-                }
-            ]
-        },
-        {
-            "name": "Growth Records",
-            "item": [{
-                    "name": "List for Child",
-                    "request": { "method": "GET", "url": "{{baseUrl}}/api/growth-records/children/{{childId}}" }
-                },
-                {
-                    "name": "Add for Child",
-                    "request": {
-                        "method": "POST",
-                        "header": [{ "key": "Content-Type", "value": "application/x-www-form-urlencoded" }],
-                        "body": {
-                            "mode": "urlencoded",
-                            "urlencoded": [
-                                { "key": "additionalInfo", "value": "Good progress" },
-                                { "key": "dateOfRecord", "value": "2025-01-02" },
-                                { "key": "height", "value": "100" },
-                                { "key": "weight", "value": "15" },
-                                { "key": "type", "value": "PHYSICAL" },
-                                { "key": "status", "value": "ACHIEVED" }
-                            ]
-                        },
-                        "url": "{{baseUrl}}/api/growth-records/children/{{childId}}"
-                    }
-                },
-                {
-                    "name": "Edit for Child",
-                    "request": {
-                        "method": "PUT",
-                        "header": [{ "key": "Content-Type", "value": "application/x-www-form-urlencoded" }],
-                        "body": {
-                            "mode": "urlencoded",
-                            "urlencoded": [
-                                { "key": "additionalInfo", "value": "Updated info" },
-                                { "key": "dateOfRecord", "value": "2025-01-03" },
-                                { "key": "height", "value": "101" },
-                                { "key": "weight", "value": "15.2" },
-                                { "key": "type", "value": "PHYSICAL" },
-                                { "key": "status", "value": "ACHIEVED" }
-                            ]
-                        },
-                        "url": "{{baseUrl}}/api/growth-records/children/{{childId}}/{{growthRecordId}}"
-                    }
-                },
-                {
-                    "name": "Delete for Child",
-                    "request": { "method": "DELETE", "url": "{{baseUrl}}/api/growth-records/children/{{childId}}/{{growthRecordId}}" }
                 }
             ]
         }
-    ],
-    "variable": [
-        { "key": "baseUrl", "value": "http://localhost:8080" },
-        { "key": "productId", "value": "1" },
-        { "key": "childId", "value": "1" },
-        { "key": "recordId", "value": "1" },
-        { "key": "growthRecordId", "value": "1" }
     ]
 }
