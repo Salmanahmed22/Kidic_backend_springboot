@@ -15,32 +15,21 @@ public class Family {
     @GeneratedValue(strategy = GenerationType.UUID)
     @Column(columnDefinition = "BINARY(16)")
     private UUID id;
-    
-    @NotBlank
-    @Size(max = 255)
-    private String password;
+
     
     @OneToMany(mappedBy = "family", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
     private List<Child> children = new ArrayList<>();
-    
-    @ManyToMany(fetch = FetchType.LAZY)
-    @JoinTable(
-        name = "family_parents",
-        joinColumns = @JoinColumn(name = "family_id"),
-        inverseJoinColumns = @JoinColumn(name = "parent_id")
-    )
+
+    @OneToMany(mappedBy = "family", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
     private List<Parent> parents = new ArrayList<>();
-    
+
+
     @OneToMany(mappedBy = "family", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
     private List<Notification> notifications = new ArrayList<>();
     
     // Constructors
     public Family() {}
-    
-    public Family(String password) {
-        this.password = password;
-    }
-    
+
     // Getters and Setters
     public UUID getId() {
         return id;
@@ -49,14 +38,7 @@ public class Family {
     public void setId(UUID id) {
         this.id = id;
     }
-    
-    public String getPassword() {
-        return password;
-    }
-    
-    public void setPassword(String password) {
-        this.password = password;
-    }
+
     
     public List<Child> getChildren() {
         return children;

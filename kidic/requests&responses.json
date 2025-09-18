@@ -1,0 +1,43 @@
+POST /api/auth/signup
+Request Body:
+{
+"name": "Ahmed",
+"phone": "01012345678",
+"email": "ahmed@example.com",
+"gender": true,
+"password": "mypassword123"
+}
+
+Response:
+{
+"token": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9..."
+}
+
+
+POST /api/auth/login
+Request Body:
+{
+  "email": "salman@example.com",
+  "password": "123456"
+}
+
+Response:
+{
+"token": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9..."
+}
+
+//decoded jwt token
+{
+  "sub": "parent@email.com",
+  "iat": 1694279348,
+  "exp": 1694365748,
+  "family_id": 3 //family_id attribute is found only if the parent joined a family
+
+//error json
+{
+"timestamp": "2025-09-11T21:11:37.9313199",
+"status": 400,
+"error": "Bad Request",
+"message": "Password must be at least 6 characters",
+"path": "uri=/api/auth/signup"
+}

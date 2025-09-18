@@ -1,7 +1,6 @@
 package com.example.kidic.entity;
 
 import jakarta.persistence.*;
-import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Size;
 import java.time.LocalDate;
@@ -25,7 +24,22 @@ public class MedicalRecord {
     private String description;
     
     @Enumerated(EnumType.STRING)
-    private FileType file;
+    @Column(name = "file_type")
+    private FileType fileType;
+    
+    @Size(max = 500)
+    @Column(name = "file_name")
+    private String fileName;
+    
+    @Column(name = "file_content", columnDefinition = "LONGBLOB")
+    private byte[] fileContent;
+    
+    @Column(name = "file_size")
+    private Long fileSize;
+    
+    @Size(max = 100)
+    @Column(name = "file_content_type")
+    private String fileContentType;
     
     @Enumerated(EnumType.STRING)
     private StatusType status;
@@ -38,11 +52,11 @@ public class MedicalRecord {
     public MedicalRecord() {}
     
     public MedicalRecord(MedicalRecordType type, LocalDate dateOfRecord, String description, 
-                        FileType file, StatusType status, Child child) {
+                        FileType fileType, StatusType status, Child child) {
         this.type = type;
         this.dateOfRecord = dateOfRecord;
         this.description = description;
-        this.file = file;
+        this.fileType = fileType;
         this.status = status;
         this.child = child;
     }
@@ -80,12 +94,44 @@ public class MedicalRecord {
         this.description = description;
     }
     
-    public FileType getFile() {
-        return file;
+    public FileType getFileType() {
+        return fileType;
     }
     
-    public void setFile(FileType file) {
-        this.file = file;
+    public void setFileType(FileType fileType) {
+        this.fileType = fileType;
+    }
+    
+    public String getFileName() {
+        return fileName;
+    }
+    
+    public void setFileName(String fileName) {
+        this.fileName = fileName;
+    }
+    
+    public byte[] getFileContent() {
+        return fileContent;
+    }
+    
+    public void setFileContent(byte[] fileContent) {
+        this.fileContent = fileContent;
+    }
+    
+    public Long getFileSize() {
+        return fileSize;
+    }
+    
+    public void setFileSize(Long fileSize) {
+        this.fileSize = fileSize;
+    }
+    
+    public String getFileContentType() {
+        return fileContentType;
+    }
+    
+    public void setFileContentType(String fileContentType) {
+        this.fileContentType = fileContentType;
     }
     
     public StatusType getStatus() {
