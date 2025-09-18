@@ -17,7 +17,6 @@ public class AuthController {
     private AuthService authService;
     @PostMapping("signup/new-family")
     public ResponseEntity<AuthResponseDTO> signUpNewFamily(@RequestBody SignUpNewFamilyRequestDTO request){
-        System.out.println("new-familyyyyy");
         return ResponseEntity.ok(authService.signUpNewFamily(request));
     }
 
@@ -29,6 +28,5 @@ public class AuthController {
     @PostMapping("login")
     public ResponseEntity<AuthResponseDTO> login(@RequestBody LoginRequestDTO request){
         return ResponseEntity.ok(authService.login(request));
-
     }
 }

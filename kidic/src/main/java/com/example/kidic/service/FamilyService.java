@@ -3,7 +3,7 @@ package com.example.kidic.service;
 import com.example.kidic.config.JwtService;
 import com.example.kidic.dto.ChildResponseDTO;
 import com.example.kidic.dto.FamilyResponseDTO;
-import com.example.kidic.dto.ParentResonseDTO;
+import com.example.kidic.dto.ParentResponseDTO;
 import com.example.kidic.entity.Child;
 import com.example.kidic.entity.Family;
 import com.example.kidic.entity.Parent;
@@ -24,6 +24,8 @@ public class FamilyService {
     private ParentRepository parentRepository;
     @Autowired
     private JwtService jwtService;
+    @Autowired
+    private ParentService parentService;
 
 
     public Family createFamily() {
@@ -70,19 +72,13 @@ public class FamilyService {
                 .orElseThrow(() -> new IllegalArgumentException("Family not found"));
 
         List<ChildResponseDTO> children = new ArrayList<>();
-        List<ParentResonseDTO> parents = new ArrayList<>();
+        List<ParentResponseDTO> parents = new ArrayList<>();
         family.getChildren().forEach(child -> {
             ChildResponseDTO responseDTO = ChildService.toResponseDTO(child);
             children.add(responseDTO);
         });
         family.getParents().forEach(parent -> {
-            ParentResonseDTO responseDTO = ParentResonseDTO.builder()
-                    .id(parent.getId())
-                    .name(parent.getName())
-                    .email(parent.getEmail())
-                    .phone(parent.getPhone())
-                    .gender(parent.getGender())
-                    .build();
+            ParentResponseDTO responseDTO = parentService.mapToResponseDTO(parent);
             parents.add(responseDTO);
         });
 

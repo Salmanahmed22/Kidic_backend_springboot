@@ -9,5 +9,5 @@ import java.util.List;
 @Builder
 public class FamilyResponseDTO {
     private List<ChildResponseDTO> children;
-    private List<ParentResonseDTO> parents;
+    private List<ParentResponseDTO> parents;
 }
