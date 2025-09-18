@@ -19,7 +19,11 @@ public class GrowthRecordController {
     private GrowthRecordService growthRecordService;
 
     @GetMapping("/children/{childId}")
-    public ResponseEntity<List<GrowthRecord>> listForChild(@PathVariable Long childId) {
+    public ResponseEntity<List<GrowthRecord>> listForChild(
+            @PathVariable Long childId,
+            @RequestHeader("Authorization") String authHeader) {
+        String token = authHeader.replace("Bearer ", "");
+        // Optionally, pass token to service if needed
         return ResponseEntity.ok(growthRecordService.listForChild(childId));
     }
 
@@ -31,7 +35,9 @@ public class GrowthRecordController {
             @RequestParam(value = "height", required = false) Double height,
             @RequestParam(value = "weight", required = false) Double weight,
             @RequestParam("type") GrowthRecord.GrowthType type,
-            @RequestParam("status") GrowthRecord.StatusType status) {
+            @RequestParam("status") GrowthRecord.StatusType status,
+            @RequestHeader("Authorization") String authHeader) {
+        String token = authHeader.replace("Bearer ", "");
         GrowthRecord created = growthRecordService.addForChild(
                 childId,
                 additionalInfo,
@@ -53,7 +59,9 @@ public class GrowthRecordController {
             @RequestParam(value = "height", required = false) Double height,
             @RequestParam(value = "weight", required = false) Double weight,
             @RequestParam(value = "type", required = false) GrowthRecord.GrowthType type,
-            @RequestParam(value = "status", required = false) GrowthRecord.StatusType status) {
+            @RequestParam(value = "status", required = false) GrowthRecord.StatusType status,
+            @RequestHeader("Authorization") String authHeader) {
+        String token = authHeader.replace("Bearer ", "");
         GrowthRecord updated = growthRecordService.editForChild(
                 childId,
                 recordId,
@@ -68,7 +76,11 @@ public class GrowthRecordController {
     }
 
     @DeleteMapping("/children/{childId}/{recordId}")
-    public ResponseEntity<Void> deleteForChild(@PathVariable Long childId, @PathVariable Long recordId) {
+    public ResponseEntity<Void> deleteForChild(
+            @PathVariable Long childId,
+            @PathVariable Long recordId,
+            @RequestHeader("Authorization") String authHeader) {
+        String token = authHeader.replace("Bearer ", "");
         growthRecordService.deleteForChild(childId, recordId);
         return ResponseEntity.noContent().build();
     }
