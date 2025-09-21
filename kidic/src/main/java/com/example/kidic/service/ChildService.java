@@ -103,8 +103,8 @@ public class ChildService {
         UUID familyId = jwtService.extractFamilyId(token);
         Child child = childRepository.findById(id)
                 .orElseThrow(() -> new IllegalArgumentException("Child not found"));
-        if (familyService.isChildMember(familyId, child)) {
-            throw new IllegalArgumentException("Child does not belong this family");
+        if (!familyService.isChildMember(familyId, child)) {
+            throw new IllegalArgumentException("Child does not belong to this family");
         }
         return toResponseDTO(child);
     }
