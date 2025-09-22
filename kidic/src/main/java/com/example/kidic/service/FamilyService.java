@@ -89,4 +89,31 @@ public class FamilyService {
 
         return response;
     }
+
+    public List<ParentResponseDTO> getFamilyParents(String token) {
+        UUID familyId = jwtService.extractFamilyId(token);
+        Family family = familyRepository.findById(familyId)
+                .orElseThrow(() -> new IllegalArgumentException("Family not found"));
+
+        List<ParentResponseDTO> parents = new ArrayList<>();
+
+        family.getParents().forEach(parent -> {
+            ParentResponseDTO responseDTO = parentService.mapToResponseDTO(parent);
+            parents.add(responseDTO);
+        });
+        return parents;
+    }
+
+    public List<ChildResponseDTO> getFamilyChildren(String token) {
+        UUID familyId = jwtService.extractFamilyId(token);
+        Family family = familyRepository.findById(familyId)
+                .orElseThrow(() -> new IllegalArgumentException("Family not found"));
+
+        List<ChildResponseDTO> children = new ArrayList<>();
+        family.getChildren().forEach(child -> {
+            ChildResponseDTO responseDTO = ChildService.toResponseDTO(child);
+            children.add(responseDTO);
+        });
+        return children;
+    }
 }

@@ -448,6 +448,65 @@
                     }
                 }
             ]
+        },
+        {
+            "name": "Family",
+            "item": [
+                {
+                    "name": "Get Family",
+                    "request": {
+                        "method": "GET",
+                        "header": [
+                            {
+                                "key": "Authorization",
+                                "value": "Bearer {{token}}",
+                                "type": "text"
+                            }
+                        ],
+                        "url": {
+                            "raw": "{{baseUrl}}/api/family",
+                            "host": ["{{baseUrl}}"],
+                            "path": ["api", "family"]
+                        }
+                    }
+                },
+                {
+                    "name": "Get Parents",
+                    "request": {
+                        "method": "GET",
+                        "header": [
+                            {
+                                "key": "Authorization",
+                                "value": "Bearer {{token}}",
+                                "type": "text"
+                            }
+                        ],
+                        "url": {
+                            "raw": "{{baseUrl}}/api/family/parents",
+                            "host": ["{{baseUrl}}"],
+                            "path": ["api", "family", "parents"]
+                        }
+                    }
+                },
+                {
+                    "name": "Get Children",
+                    "request": {
+                        "method": "GET",
+                        "header": [
+                            {
+                                "key": "Authorization",
+                                "value": "Bearer {{token}}",
+                                "type": "text"
+                            }
+                        ],
+                        "url": {
+                            "raw": "{{baseUrl}}/api/family/children",
+                            "host": ["{{baseUrl}}"],
+                            "path": ["api", "family", "children"]
+                        }
+                    }
+                }
+            ]
         }
     ]
 }
