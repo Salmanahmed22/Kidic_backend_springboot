@@ -28,7 +28,7 @@ public class SecurityConfiguration {
                         .requestMatchers("/api/auth/**", "/api/test/**", "/actuator/**").permitAll()
                         .anyRequest().authenticated()
                 )
-
+                .cors(cors->{})
                 // Stateless sessions
                 .sessionManagement(session -> session
                         .sessionCreationPolicy(SessionCreationPolicy.STATELESS)
