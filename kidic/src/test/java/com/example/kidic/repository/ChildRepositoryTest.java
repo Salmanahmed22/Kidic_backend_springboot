@@ -12,6 +12,7 @@ import org.springframework.test.context.ActiveProfiles;
 
 import java.time.LocalDate;
 import java.util.List;
+import java.util.UUID;
 
 import static org.junit.jupiter.api.Assertions.*;
 
@@ -23,10 +24,10 @@ class ChildRepositoryTest {
     private ChildRepository childRepository;
 
     @Autowired
-    private ParentRepository parentRepository;
+    private FamilyRepository familyRepository;
 
     @Autowired
-    private FamilyRepository familyRepository;
+    private ParentRepository parentRepository;
 
     @Autowired
     private TestEntityManager entityManager;
@@ -42,225 +43,199 @@ class ChildRepositoryTest {
     }
 
     @Test
-    void testFindByParent() {
-        // Create and persist a parent
-        Parent parent = new Parent("John Smith", "1234567890", "john.smith@email.com", true, "password");
-        parent.setProfilePicture(Parent.ProfilePictureType.DEFAULT);
-        parent = entityManager.persistAndFlush(parent);
-
-        // Create and persist a family
-        Family family = new Family("family123");
-        family.getParents().add(parent);
+    void testFindByFamily_Success() {
+        // Positive case: Find children by family
+        Family family = new Family();
         family = entityManager.persistAndFlush(family);
 
-        // Update parent's families collection
-        parent.getFamilies().add(family);
-        parent = entityManager.merge(parent);
+        Child child1 = new Child("Emma Smith", false, LocalDate.of(2015, 5, 15), null, family);
+        Child child2 = new Child("Liam Smith", true, LocalDate.of(2018, 3, 10), null, family);
+        entityManager.persistAndFlush(child1);
+        entityManager.persistAndFlush(child2);
+
+        // Update family's children collection
+        family.getChildren().add(child1);
+        family.getChildren().add(child2);
+        family = entityManager.merge(family);
         entityManager.flush();
 
-        // Create and persist a child
-        Child child = new Child("Emma Smith", false, LocalDate.of(2020, 5, 15), parent, family);
-        child = entityManager.persistAndFlush(child);
-
-        // Update parent's children collection
-        parent.getChildren().add(child);
-        parent = entityManager.merge(parent);
-        entityManager.flush();
-
-        // Test findByParent
-        List<Child> children = childRepository.findByParent(parent);
-        assertEquals(1, children.size());
-        assertEquals("Emma Smith", children.get(0).getName());
-    }
-
-    @Test
-    void testFindByFamily() {
-        // Create and persist a parent
-        Parent parent = new Parent("John Smith", "1234567890", "john.smith@email.com", true, "password");
-        parent.setProfilePicture(Parent.ProfilePictureType.DEFAULT);
-        parent = entityManager.persistAndFlush(parent);
-
-        // Create and persist a family
-        Family family = new Family("family123");
-        family.getParents().add(parent);
-        family = entityManager.persistAndFlush(family);
-
-        // Update parent's families collection
-        parent.getFamilies().add(family);
-        parent = entityManager.merge(parent);
-        entityManager.flush();
-
-        // Create and persist a child
-        Child child = new Child("Emma Smith", false, LocalDate.of(2020, 5, 15), parent, family);
-        child = entityManager.persistAndFlush(child);
-
-        // Test findByFamily
         List<Child> children = childRepository.findByFamily(family);
-        assertEquals(1, children.size());
-        assertEquals("Emma Smith", children.get(0).getName());
+        assertEquals(2, children.size(), "Should find two children for the family");
+        assertTrue(children.contains(child1), "Should contain Emma Smith");
+        assertTrue(children.contains(child2), "Should contain Liam Smith");
     }
 
     @Test
-    void testFindByNameContaining() {
-        // Create and persist a parent
-        Parent parent = new Parent("John Smith", "1234567890", "john.smith@email.com", true, "password");
-        parent.setProfilePicture(Parent.ProfilePictureType.DEFAULT);
-        parent = entityManager.persistAndFlush(parent);
-
-        // Create and persist a family
-        Family family = new Family("family123");
+    void testFindByFamily_EmptyFamily() {
+        // Negative case: Find children with empty family
+        Family family = new Family();
         family = entityManager.persistAndFlush(family);
 
-        // Create and persist children
-        Child child1 = new Child("Emma Smith", false, LocalDate.of(2020, 5, 15), parent, family);
-        Child child2 = new Child("Liam Smith", true, LocalDate.of(2019, 8, 22), parent, family);
-        child1 = entityManager.persistAndFlush(child1);
-        child2 = entityManager.persistAndFlush(child2);
+        List<Child> children = childRepository.findByFamily(family);
+        assertTrue(children.isEmpty(), "Should find no children for empty family");
+    }
 
-        // Test findByNameContaining
+    @Test
+    void testFindByFamily_NonExistentFamily() {
+        // Negative case: Find children with non-existent family
+        Family family = new Family();
+        family.setId(UUID.randomUUID()); // Non-persisted family
+        List<Child> children = childRepository.findByFamily(family);
+        assertTrue(children.isEmpty(), "Should find no children for non-existent family");
+    }
+
+    @Test
+    void testFindByNameContaining_Success() {
+        // Positive case: Find children by name containing
+        Family family = new Family();
+        family = entityManager.persistAndFlush(family);
+
+        Child child1 = new Child("Emma Smith", false, LocalDate.of(2015, 5, 15), null, family);
+        Child child2 = new Child("Liam Smith", true, LocalDate.of(2018, 3, 10), null, family);
+        entityManager.persistAndFlush(child1);
+        entityManager.persistAndFlush(child2);
+
         List<Child> children = childRepository.findByNameContaining("Smith");
-        assertEquals(2, children.size());
-        assertTrue(children.stream().anyMatch(c -> c.getName().equals("Emma Smith")));
-        assertTrue(children.stream().anyMatch(c -> c.getName().equals("Liam Smith")));
+        assertEquals(2, children.size(), "Should find two children with 'Smith' in name");
+        assertTrue(children.contains(child1), "Should contain Emma Smith");
+        assertTrue(children.contains(child2), "Should contain Liam Smith");
     }
 
     @Test
-    void testFindByGender() {
-        // Create and persist a parent
-        Parent parent = new Parent("John Smith", "1234567890", "john.smith@email.com", true, "password");
-        parent.setProfilePicture(Parent.ProfilePictureType.DEFAULT);
-        parent = entityManager.persistAndFlush(parent);
-
-        // Create and persist a family
-        Family family = new Family("family123");
+    void testFindByNameContaining_NoMatch() {
+        // Negative case: Find children with no matching name
+        Family family = new Family();
         family = entityManager.persistAndFlush(family);
 
-        // Create and persist children
-        Child child1 = new Child("Emma Smith", false, LocalDate.of(2020, 5, 15), parent, family);
-        Child child2 = new Child("Liam Smith", true, LocalDate.of(2019, 8, 22), parent, family);
-        child1 = entityManager.persistAndFlush(child1);
-        child2 = entityManager.persistAndFlush(child2);
+        Child child = new Child("Emma Smith", false, LocalDate.of(2015, 5, 15), null, family);
+        entityManager.persistAndFlush(child);
 
-        // Test findByGender
-        List<Child> femaleChildren = childRepository.findByGender(false);
-        assertEquals(1, femaleChildren.size());
-        assertEquals("Emma Smith", femaleChildren.get(0).getName());
+        List<Child> children = childRepository.findByNameContaining("Jones");
+        assertTrue(children.isEmpty(), "Should find no children with 'Jones' in name");
+    }
+
+    @Test
+    void testFindByGender_Success() {
+        // Positive case: Find children by gender
+        Family family = new Family();
+        family = entityManager.persistAndFlush(family);
+
+        Child child1 = new Child("Emma Smith", false, LocalDate.of(2015, 5, 15), null, family);
+        Child child2 = new Child("Liam Smith", true, LocalDate.of(2018, 3, 10), null, family);
+        entityManager.persistAndFlush(child1);
+        entityManager.persistAndFlush(child2);
 
         List<Child> maleChildren = childRepository.findByGender(true);
-        assertEquals(1, maleChildren.size());
-        assertEquals("Liam Smith", maleChildren.get(0).getName());
+        assertEquals(1, maleChildren.size(), "Should find one male child");
+        assertEquals(child2, maleChildren.get(0), "Should be Liam Smith");
+
+        List<Child> femaleChildren = childRepository.findByGender(false);
+        assertEquals(1, femaleChildren.size(), "Should find one female child");
+        assertEquals(child1, femaleChildren.get(0), "Should be Emma Smith");
     }
 
     @Test
-    void testFindByBirthDateBetween() {
-        // Create and persist a parent
-        Parent parent = new Parent("John Smith", "1234567890", "john.smith@email.com", true, "password");
-        parent.setProfilePicture(Parent.ProfilePictureType.DEFAULT);
-        parent = entityManager.persistAndFlush(parent);
-
-        // Create and persist a family
-        Family family = new Family("family123");
+    void testFindByGender_NoMatch() {
+        // Negative case: Find children with no matching gender
+        Family family = new Family();
         family = entityManager.persistAndFlush(family);
 
-        // Create and persist children
-        Child child1 = new Child("Emma Smith", false, LocalDate.of(2020, 5, 15), parent, family);
-        Child child2 = new Child("Liam Smith", true, LocalDate.of(2019, 8, 22), parent, family);
-        child1 = entityManager.persistAndFlush(child1);
-        child2 = entityManager.persistAndFlush(child2);
+        Child child = new Child("Emma Smith", false, LocalDate.of(2015, 5, 15), null, family);
+        entityManager.persistAndFlush(child);
 
-        // Test findByBirthDateBetween
-        List<Child> children = childRepository.findByBirthDateBetween(
-                LocalDate.of(2019, 1, 1),
-                LocalDate.of(2020, 12, 31)
-        );
-        assertEquals(2, children.size());
-        assertTrue(children.stream().anyMatch(c -> c.getName().equals("Emma Smith")));
-        assertTrue(children.stream().anyMatch(c -> c.getName().equals("Liam Smith")));
+        List<Child> maleChildren = childRepository.findByGender(true);
+        assertTrue(maleChildren.isEmpty(), "Should find no male children");
     }
 
     @Test
-    void testFindByParentId() {
-        // Create and persist a parent
-        Parent parent = new Parent("John Smith", "1234567890", "john.smith@email.com", true, "password");
-        parent.setProfilePicture(Parent.ProfilePictureType.DEFAULT);
-        parent = entityManager.persistAndFlush(parent);
-
-        // Create and persist a family
-        Family family = new Family("family123");
+    void testFindByBirthDateBetween_Success() {
+        // Positive case: Find children by birth date range
+        Family family = new Family();
         family = entityManager.persistAndFlush(family);
 
-        // Create and persist a child
-        Child child = new Child("Emma Smith", false, LocalDate.of(2020, 5, 15), parent, family);
-        child = entityManager.persistAndFlush(child);
+        Child child1 = new Child("Emma Smith", false, LocalDate.of(2015, 5, 15), null, family);
+        Child child2 = new Child("Liam Smith", true, LocalDate.of(2018, 3, 10), null, family);
+        entityManager.persistAndFlush(child1);
+        entityManager.persistAndFlush(child2);
 
-        // Test findByParentId
-        List<Child> children = childRepository.findByParentId(parent.getId());
-        assertEquals(1, children.size());
-        assertEquals("Emma Smith", children.get(0).getName());
+        List<Child> children = childRepository.findByBirthDateBetween(LocalDate.of(2015, 1, 1), LocalDate.of(2016, 12, 31));
+        assertEquals(1, children.size(), "Should find one child in date range");
+        assertEquals(child1, children.get(0), "Should be Emma Smith");
     }
 
     @Test
-    void testFindByFamilyId() {
-        // Create and persist a parent
-        Parent parent = new Parent("John Smith", "1234567890", "john.smith@email.com", true, "password");
-        parent.setProfilePicture(Parent.ProfilePictureType.DEFAULT);
-        parent = entityManager.persistAndFlush(parent);
-
-        // Create and persist a family
-        Family family = new Family("family123");
+    void testFindByBirthDateBetween_NoMatch() {
+        // Negative case: Find children with no matching birth date
+        Family family = new Family();
         family = entityManager.persistAndFlush(family);
 
-        // Create and persist a child
-        Child child = new Child("Emma Smith", false, LocalDate.of(2020, 5, 15), parent, family);
-        child = entityManager.persistAndFlush(child);
+        Child child = new Child("Emma Smith", false, LocalDate.of(2015, 5, 15), null, family);
+        entityManager.persistAndFlush(child);
 
-        // Test findByFamilyId
-        List<Child> children = childRepository.findByFamilyId(family.getId());
-        assertEquals(1, children.size());
-        assertEquals("Emma Smith", children.get(0).getName());
+        List<Child> children = childRepository.findByBirthDateBetween(LocalDate.of(2019, 1, 1), LocalDate.of(2020, 12, 31));
+        assertTrue(children.isEmpty(), "Should find no children in date range");
     }
 
     @Test
-    void testCountByParent() {
-        // Create and persist a parent
-        Parent parent = new Parent("John Smith", "1234567890", "john.smith@email.com", true, "password");
-        parent.setProfilePicture(Parent.ProfilePictureType.DEFAULT);
-        parent = entityManager.persistAndFlush(parent);
-
-        // Create and persist a family
-        Family family = new Family("family123");
+    void testFindByFamilyId_Success() {
+        // Positive case: Find children by family ID
+        Family family = new Family();
         family = entityManager.persistAndFlush(family);
+        UUID familyId = family.getId();
 
-        // Create and persist children
-        Child child1 = new Child("Emma Smith", false, LocalDate.of(2020, 5, 15), parent, family);
-        Child child2 = new Child("Liam Smith", true, LocalDate.of(2019, 8, 22), parent, family);
-        child1 = entityManager.persistAndFlush(child1);
-        child2 = entityManager.persistAndFlush(child2);
+        Child child1 = new Child("Emma Smith", false, LocalDate.of(2015, 5, 15), null, family);
+        Child child2 = new Child("Liam Smith", true, LocalDate.of(2018, 3, 10), null, family);
+        entityManager.persistAndFlush(child1);
+        entityManager.persistAndFlush(child2);
 
-        // Test countByParent
-        long count = childRepository.countByParent(parent);
-        assertEquals(2, count);
+        // Update family's children collection
+        family.getChildren().add(child1);
+        family.getChildren().add(child2);
+        family = entityManager.merge(family);
+        entityManager.flush();
+
+        List<Child> children = childRepository.findByFamilyId(familyId);
+        assertEquals(2, children.size(), "Should find two children for the family ID");
+        assertTrue(children.contains(child1), "Should contain Emma Smith");
+        assertTrue(children.contains(child2), "Should contain Liam Smith");
     }
 
     @Test
-    void testCountByFamily() {
-        // Create and persist a parent
-        Parent parent = new Parent("John Smith", "1234567890", "john.smith@email.com", true, "password");
-        parent.setProfilePicture(Parent.ProfilePictureType.DEFAULT);
-        parent = entityManager.persistAndFlush(parent);
+    void testFindByFamilyId_NonExistentFamilyId() {
+        // Negative case: Find children with non-existent family ID
+        UUID nonExistentFamilyId = UUID.randomUUID();
+        List<Child> children = childRepository.findByFamilyId(nonExistentFamilyId);
+        assertTrue(children.isEmpty(), "Should find no children for non-existent family ID");
+    }
 
-        // Create and persist a family
-        Family family = new Family("family123");
+    @Test
+    void testCountByFamily_Success() {
+        // Positive case: Count children by family
+        Family family = new Family();
         family = entityManager.persistAndFlush(family);
 
-        // Create and persist children
-        Child child1 = new Child("Emma Smith", false, LocalDate.of(2020, 5, 15), parent, family);
-        Child child2 = new Child("Liam Smith", true, LocalDate.of(2019, 8, 22), parent, family);
-        child1 = entityManager.persistAndFlush(child1);
-        child2 = entityManager.persistAndFlush(child2);
+        Child child1 = new Child("Emma Smith", false, LocalDate.of(2015, 5, 15), null, family);
+        Child child2 = new Child("Liam Smith", true, LocalDate.of(2018, 3, 10), null, family);
+        entityManager.persistAndFlush(child1);
+        entityManager.persistAndFlush(child2);
 
-        // Test countByFamily
+        // Update family's children collection
+        family.getChildren().add(child1);
+        family.getChildren().add(child2);
+        family = entityManager.merge(family);
+        entityManager.flush();
+
         long count = childRepository.countByFamily(family);
-        assertEquals(2, count);
+        assertEquals(2, count, "Should count two children in the family");
+    }
+
+    @Test
+    void testCountByFamily_EmptyFamily() {
+        // Negative case: Count children in empty family
+        Family family = new Family();
+        family = entityManager.persistAndFlush(family);
+
+        long count = childRepository.countByFamily(family);
+        assertEquals(0, count, "Should count zero children in empty family");
     }
 }
