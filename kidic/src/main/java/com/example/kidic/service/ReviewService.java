@@ -51,8 +51,17 @@ public class ReviewService {
                 .build();
     }
 
-    public List<ReviewResponseDTO> get() {
+    public List<ReviewResponseDTO> getNormalReviews() {
         List<Review> reviews = reviewRepository.findByType(Review.ReviewType.NORMAL);
+        List<ReviewResponseDTO> dtos = new ArrayList<>();
+        for (Review review : reviews) {
+            dtos.add(toDto(review));
+        }
+        return dtos;
+    }
+
+    public List<ReviewResponseDTO> getComplains() {
+        List<Review> reviews = reviewRepository.findByType(Review.ReviewType.COMPLAIN);
         List<ReviewResponseDTO> dtos = new ArrayList<>();
         for (Review review : reviews) {
             dtos.add(toDto(review));

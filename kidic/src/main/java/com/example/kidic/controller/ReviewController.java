@@ -21,9 +21,14 @@ public class ReviewController {
         String token = authHead.substring(7);
         return ResponseEntity.ok(reviewService.add(token,requestDTO));
     }
-    @GetMapping
-    public ResponseEntity<List<ReviewResponseDTO>> get(
+    @GetMapping("normal-reviews")
+    public ResponseEntity<List<ReviewResponseDTO>> getNormalReviews(
             @RequestHeader("Authorization") String authHead){
-        return ResponseEntity.ok(reviewService.get());
+        return ResponseEntity.ok(reviewService.getNormalReviews());
+    }
+    @GetMapping("complains")
+    public ResponseEntity<List<ReviewResponseDTO>> getComplains(
+            @RequestHeader("Authorization") String authHead){
+        return ResponseEntity.ok(reviewService.getComplains());
     }
 }
