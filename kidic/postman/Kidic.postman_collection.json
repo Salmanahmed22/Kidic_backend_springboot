@@ -434,7 +434,17 @@
                         "header": [
                             { "key": "Authorization", "value": "Bearer {{token}}" }
                         ],
-                        "url": { "raw": "{{baseUrl}}/review", "host": ["{{baseUrl}}"], "path": ["review"] }
+                        "url": { "raw": "{{baseUrl}}/review/normal-reviews", "host": ["{{baseUrl}}"], "path": ["review"] }
+                    }
+                },
+                {
+                    "name": "Get All Complains",
+                    "request": {
+                        "method": "GET",
+                        "header": [
+                            { "key": "Authorization", "value": "Bearer {{token}}" }
+                        ],
+                        "url": { "raw": "{{baseUrl}}/review/complains", "host": ["{{baseUrl}}"], "path": ["review"] }
                     }
                 }
             ]
