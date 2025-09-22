@@ -408,6 +408,36 @@
                     }
                 }
             ]
+        },
+        {
+            "name": "Review",
+            "item": [
+                {
+                    "name": "Add Review",
+                    "request": {
+                        "method": "POST",
+                        "header": [
+                            { "key": "Authorization", "value": "Bearer {{token}}" },
+                            { "key": "Content-Type", "value": "application/json" }
+                        ],
+                        "url": { "raw": "{{baseUrl}}/review", "host": ["{{baseUrl}}"], "path": ["review"] },
+                        "body": {
+                            "mode": "raw",
+                            "raw": "{\n  \"content\": \"Great app!\",\n  \"type\": \"NORMAL\",\n  \"stars\": 5}"
+                        }
+                    }
+                },
+                {
+                    "name": "Get All Reviews",
+                    "request": {
+                        "method": "GET",
+                        "header": [
+                            { "key": "Authorization", "value": "Bearer {{token}}" }
+                        ],
+                        "url": { "raw": "{{baseUrl}}/review", "host": ["{{baseUrl}}"], "path": ["review"] }
+                    }
+                }
+            ]
         }
     ]
 }
