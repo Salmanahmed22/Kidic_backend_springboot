@@ -13,6 +13,7 @@ import org.springframework.test.context.ActiveProfiles;
 import java.time.LocalDate;
 import java.util.List;
 import java.util.Optional;
+import java.util.UUID;
 
 import static org.junit.jupiter.api.Assertions.*;
 
@@ -43,61 +44,51 @@ class FamilyRepositoryTest {
     }
 
     @Test
-    void testFindByPassword() {
-        // Create and persist a family
-        Family family = new Family("securePassword123");
+    void testFindByParentId_Success() {
+        // Positive case: Find families by parent ID
+        Family family = new Family();
         family = entityManager.persistAndFlush(family);
 
-        // Test findByPassword
-        Optional<Family> foundFamily = familyRepository.findByPassword("securePassword123");
-        assertTrue(foundFamily.isPresent());
-        assertEquals(family.getId(), foundFamily.get().getId());
-
-        // Test non-existent password
-        Optional<Family> notFound = familyRepository.findByPassword("wrongPassword");
-        assertFalse(notFound.isPresent());
-    }
-
-    @Test
-    void testFindByParentId() {
-        // Create and persist a parent
         Parent parent = new Parent("John Smith", "1234567890", "john.smith@email.com", true, "password");
-        parent.setProfilePicture(Parent.ProfilePictureType.DEFAULT);
+        parent.setProfilePictureType(Parent.ProfilePictureType.DEFAULT); // Fixed method name
+        parent.setFamily(family);
         parent = entityManager.persistAndFlush(parent);
 
-        // Create and persist a family
-        Family family = new Family("securePassword123");
+        // Update family's parents collection
         family.getParents().add(parent);
-        family = entityManager.persistAndFlush(family);
-
-        // Update parent's families collection
-        parent.getFamilies().add(family);
-        parent = entityManager.merge(parent);
+        family = entityManager.merge(family);
         entityManager.flush();
 
-        // Test findByParentId
         List<Family> families = familyRepository.findByParentId(parent.getId());
-        assertEquals(1, families.size());
-        assertEquals(family.getId(), families.get(0).getId());
-
-        // Test non-existent parent ID
-        List<Family> noFamilies = familyRepository.findByParentId(999L);
-        assertTrue(noFamilies.isEmpty());
+        assertEquals(1, families.size(), "One family should be found for the parent ID");
+        assertEquals(family.getId(), families.get(0).getId(), "Family ID should match");
     }
 
     @Test
-    void testFindByChildId() {
-        // Create and persist a parent
+    void testFindByParentId_NonExistentParentId() {
+        // Negative case: Find families with non-existent parent ID
+        List<Family> families = familyRepository.findByParentId(999L);
+        assertTrue(families.isEmpty(), "No families should be found for non-existent parent ID");
+    }
+
+    @Test
+    void testFindByParentId_UnassociatedParent() {
+        // Negative case: Find families with unassociated parent ID
         Parent parent = new Parent("John Smith", "1234567890", "john.smith@email.com", true, "password");
-        parent.setProfilePicture(Parent.ProfilePictureType.DEFAULT);
+        parent.setProfilePictureType(Parent.ProfilePictureType.DEFAULT); // Fixed method name
         parent = entityManager.persistAndFlush(parent);
 
-        // Create and persist a family
-        Family family = new Family("securePassword123");
+        List<Family> families = familyRepository.findByParentId(parent.getId());
+        assertTrue(families.isEmpty(), "No families should be found for unassociated parent");
+    }
+
+    @Test
+    void testFindByChildId_Success() {
+        // Positive case: Find family by child ID
+        Family family = new Family();
         family = entityManager.persistAndFlush(family);
 
-        // Create and persist a child
-        Child child = new Child("Emma Smith", false, LocalDate.of(2020, 5, 15), parent, family);
+        Child child = new Child("Emma Smith", false, LocalDate.of(2015, 5, 15), null, family); // Adjusted date to past
         child = entityManager.persistAndFlush(child);
 
         // Update family's children collection
@@ -105,23 +96,45 @@ class FamilyRepositoryTest {
         family = entityManager.merge(family);
         entityManager.flush();
 
-        // Update parent's children collection
-        parent.getChildren().add(child);
-        parent = entityManager.merge(parent);
-        entityManager.flush();
-
-        // Debug entity state
-        System.out.println("Family ID: " + family.getId() + ", Children: " + family.getChildren().size());
-        System.out.println("Child ID: " + child.getId() + ", Family ID: " + child.getFamily().getId());
-        System.out.println("Parent ID: " + parent.getId() + ", Children: " + parent.getChildren().size());
-
-        // Test findByChildId
         Optional<Family> foundFamily = familyRepository.findByChildId(child.getId());
-        assertTrue(foundFamily.isPresent());
-        assertEquals(family.getId(), foundFamily.get().getId());
+        assertTrue(foundFamily.isPresent(), "Family should be found by child ID");
+        assertEquals(family.getId(), foundFamily.get().getId(), "Family ID should match");
+    }
 
-        // Test non-existent child ID
-        Optional<Family> notFound = familyRepository.findByChildId(999L);
-        assertFalse(notFound.isPresent());
+    @Test
+    void testFindByChildId_NonExistentChildId() {
+        // Negative case: Find family with non-existent child ID
+        Optional<Family> foundFamily = familyRepository.findByChildId(999L);
+        assertFalse(foundFamily.isPresent(), "No family should be found for non-existent child ID");
+    }
+
+    @Test
+    void testFindByChildId_UnassociatedChild() {
+        // Negative case: Find family with unassociated child ID
+        Child child = new Child("Emma Smith", false, LocalDate.of(2015, 5, 15), null, null); // Adjusted date to past
+        child = entityManager.persistAndFlush(child);
+
+        Optional<Family> foundFamily = familyRepository.findByChildId(child.getId());
+        assertFalse(foundFamily.isPresent(), "No family should be found for unassociated child");
+    }
+
+    @Test
+    void testFindByParentId_EmptyFamily() {
+        // Additional case: Find families with no parents
+        Family family = new Family();
+        family = entityManager.persistAndFlush(family);
+
+        List<Family> families = familyRepository.findByParentId(999L); // Non-existent parent ID
+        assertTrue(families.isEmpty(), "No families should be found with no parents");
+    }
+
+    @Test
+    void testFindByChildId_EmptyFamily() {
+        // Additional case: Find family with no children
+        Family family = new Family();
+        family = entityManager.persistAndFlush(family);
+
+        Optional<Family> foundFamily = familyRepository.findByChildId(999L); // Non-existent child ID
+        assertFalse(foundFamily.isPresent(), "No family should be found with no children");
     }
 }
