@@ -1,5 +1,6 @@
 package com.example.kidic.controller;
 
+import com.example.kidic.dto.ParentDetailsDTO;
 import com.example.kidic.dto.ParentResponseDTO;
 import com.example.kidic.dto.ParentUpdateRequestDTO;
 import com.example.kidic.service.ParentService;
@@ -26,5 +27,11 @@ public class ParentController {
     ){
         String token = authHead.substring(7);
         return ResponseEntity.ok(parentService.updateParent(token, requestDto));
+    }
+    @GetMapping("all-details")
+    public ResponseEntity<ParentDetailsDTO> getAllDetails(
+            @RequestHeader("Authorization") String authHead){
+        String token = authHead.substring(7);
+        return ResponseEntity.ok(parentService.getAllDetails(token));
     }
 }

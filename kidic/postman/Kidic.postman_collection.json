@@ -103,6 +103,13 @@
                         "header": [{ "key": "Authorization", "value": "Bearer {{token}}" }],
                         "url": { "raw": "{{baseUrl}}/parent", "host": ["{{baseUrl}}"], "path": ["parent"] }
                     }
+                },{
+                    "name": "Get All Parent Details",
+                    "request": {
+                        "method": "GET",
+                        "header": [{ "key": "Authorization", "value": "Bearer {{token}}" }],
+                        "url": { "raw": "{{baseUrl}}/parent/all-details", "host": ["{{baseUrl}}"], "path": ["parent"] }
+                    }
                 },
                 {
                     "name": "Update Parent",
