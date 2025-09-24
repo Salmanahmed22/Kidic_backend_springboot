@@ -269,6 +269,42 @@ Enums:
 }
 ```
 
+## Meal APIs (`/api/meals`)
+
+### GET `/api/meals/children/{childId}`
+- Headers: `Authorization: Bearer <token>`
+- Response 200: `Meal[]`
+
+### POST `/api/meals/children/{childId}`
+- Headers: `Authorization: Bearer <token>`
+- Consumes: `application/x-www-form-urlencoded` or `multipart/form-data`
+- Fields:
+  - `title` (required string)
+  - `ingredients` (optional string, comma-separated list like `rice,chicken,salad`)
+  - `recipe` (optional string)
+- Response 201: `Meal`
+
+### PUT `/api/meals/children/{childId}/{mealId}`
+- Headers: `Authorization: Bearer <token>`
+- Consumes: form-data or urlencoded
+- Fields (all optional): `title`, `ingredients` (CSV), `recipe`
+- Response 200: `Meal`
+
+### DELETE `/api/meals/children/{childId}/{mealId}`
+- Headers: `Authorization: Bearer <token)`
+- Response 204
+
+#### Meal schema
+```json
+{
+  "id": 1,
+  "title": "Lunch",
+  "ingredients": ["rice", "chicken", "salad"],
+  "recipe": "Boil rice and grill chicken.",
+  "child": { "id": 1, "name": "..." }
+}
+```
+
 ## Test APIs (`/api/test`)
 
 All public.
