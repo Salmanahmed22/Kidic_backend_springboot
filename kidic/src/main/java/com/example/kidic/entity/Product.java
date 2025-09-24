@@ -1,5 +1,7 @@
 package com.example.kidic.entity;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.annotation.JsonManagedReference;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.Size;
@@ -34,6 +36,7 @@ public class Product {
     private String imageName;
     
     @Column(name = "image_content", columnDefinition = "LONGBLOB")
+    @JsonIgnore
     private byte[] imageContent;
     
     @Column(name = "image_size")
@@ -47,6 +50,7 @@ public class Product {
     private CategoryType category;
     
     @OneToMany(mappedBy = "product", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
+    @JsonManagedReference(value = "product-aiInfos")
     private List<AIInfo> aiInfos = new ArrayList<>();
     
     // Constructors

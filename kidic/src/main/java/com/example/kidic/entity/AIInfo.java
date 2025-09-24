@@ -1,5 +1,6 @@
 package com.example.kidic.entity;
 
+import com.fasterxml.jackson.annotation.JsonBackReference;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.NotNull;
 
@@ -22,6 +23,7 @@ public class AIInfo {
     @NotNull
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "product_id")
+    @JsonBackReference(value = "product-aiInfos")
     private Product product;
     
     // Constructors

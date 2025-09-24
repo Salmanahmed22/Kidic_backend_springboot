@@ -9,11 +9,9 @@
         { "key": "baseUrl", "value": "http://localhost:8080/api" },
         { "key": "token", "value": "" }
     ],
-    "item": [
-        {
+    "item": [{
             "name": "Auth",
-            "item": [
-                {
+            "item": [{
                     "name": "Sign Up (New Family)",
                     "request": {
                         "method": "POST",
@@ -24,20 +22,18 @@
                             "raw": "{\n  \"name\": \"Parent Name\",\n  \"phone\": \"1234567890\",\n  \"email\": \"parent@example.com\",\n  \"gender\": true,\n  \"password\": \"yourpassword\"\n}"
                         }
                     },
-                    "event": [
-                        {
-                            "listen": "test",
-                            "script": {
-                                "exec": [
-                                    "var json = pm.response.json();",
-                                    "if(json.token){",
-                                    "    pm.collectionVariables.set('token', json.token);",
-                                    "}"
-                                ],
-                                "type": "text/javascript"
-                            }
+                    "event": [{
+                        "listen": "test",
+                        "script": {
+                            "exec": [
+                                "var json = pm.response.json();",
+                                "if(json.token){",
+                                "    pm.collectionVariables.set('token', json.token);",
+                                "}"
+                            ],
+                            "type": "text/javascript"
                         }
-                    ]
+                    }]
                 },
                 {
                     "name": "Sign Up (Existing Family)",
@@ -50,20 +46,18 @@
                             "raw": "{\n  \"name\": \"Parent Name\",\n  \"phone\": \"1234567890\",\n  \"email\": \"parent@example.com\",\n  \"gender\": true,\n  \"password\": \"yourpassword\",\n  \"familyId\": \"123e4567-e89b-12d3-a456-426614174000\"\n}"
                         }
                     },
-                    "event": [
-                        {
-                            "listen": "test",
-                            "script": {
-                                "exec": [
-                                    "var json = pm.response.json();",
-                                    "if(json.token){",
-                                    "    pm.collectionVariables.set('token', json.token);",
-                                    "}"
-                                ],
-                                "type": "text/javascript"
-                            }
+                    "event": [{
+                        "listen": "test",
+                        "script": {
+                            "exec": [
+                                "var json = pm.response.json();",
+                                "if(json.token){",
+                                "    pm.collectionVariables.set('token', json.token);",
+                                "}"
+                            ],
+                            "type": "text/javascript"
                         }
-                    ]
+                    }]
                 },
                 {
                     "name": "Login",
@@ -76,34 +70,31 @@
                             "raw": "{\n  \"email\": \"parent@example.com\",\n  \"password\": \"yourpassword\"\n}"
                         }
                     },
-                    "event": [
-                        {
-                            "listen": "test",
-                            "script": {
-                                "exec": [
-                                    "var json = pm.response.json();",
-                                    "if(json.token){",
-                                    "    pm.collectionVariables.set('token', json.token);",
-                                    "}"
-                                ],
-                                "type": "text/javascript"
-                            }
+                    "event": [{
+                        "listen": "test",
+                        "script": {
+                            "exec": [
+                                "var json = pm.response.json();",
+                                "if(json.token){",
+                                "    pm.collectionVariables.set('token', json.token);",
+                                "}"
+                            ],
+                            "type": "text/javascript"
                         }
-                    ]
+                    }]
                 }
             ]
         },
         {
             "name": "Parent",
-            "item": [
-                {
+            "item": [{
                     "name": "Get Parent",
                     "request": {
                         "method": "GET",
                         "header": [{ "key": "Authorization", "value": "Bearer {{token}}" }],
                         "url": { "raw": "{{baseUrl}}/parent", "host": ["{{baseUrl}}"], "path": ["parent"] }
                     }
-                },{
+                }, {
                     "name": "Get All Parent Details",
                     "request": {
                         "method": "GET",
@@ -130,8 +121,7 @@
         },
         {
             "name": "Child",
-            "item": [
-                {
+            "item": [{
                     "name": "Get Child",
                     "request": {
                         "method": "GET",
@@ -181,8 +171,7 @@
         },
         {
             "name": "GrowthRecord",
-            "item": [
-                {
+            "item": [{
                     "name": "List Growth Records for Child",
                     "request": {
                         "method": "GET",
@@ -232,8 +221,7 @@
         },
         {
             "name": "MedicalRecord",
-            "item": [
-                {
+            "item": [{
                     "name": "Add Medical Record",
                     "request": {
                         "method": "POST",
@@ -330,9 +318,60 @@
             ]
         },
         {
-            "name": "Product",
-            "item": [
+            "name": "Meal",
+            "item": [{
+                    "name": "List Meals for Child",
+                    "request": {
+                        "method": "GET",
+                        "header": [{ "key": "Authorization", "value": "Bearer {{token}}" }],
+                        "url": { "raw": "{{baseUrl}}/meals/children/1", "host": ["{{baseUrl}}"], "path": ["meals", "children", "1"] }
+                    }
+                },
                 {
+                    "name": "Add Meal for Child",
+                    "request": {
+                        "method": "POST",
+                        "header": [{ "key": "Authorization", "value": "Bearer {{token}}" }],
+                        "url": { "raw": "{{baseUrl}}/meals/children/1", "host": ["{{baseUrl}}"], "path": ["meals", "children", "1"] },
+                        "body": {
+                            "mode": "formdata",
+                            "formdata": [
+                                { "key": "title", "value": "Lunch", "type": "text" },
+                                { "key": "ingredients", "value": "rice,chicken,salad", "type": "text" },
+                                { "key": "recipe", "value": "Boil rice and grill chicken.", "type": "text" }
+                            ]
+                        }
+                    }
+                },
+                {
+                    "name": "Edit Meal for Child",
+                    "request": {
+                        "method": "PUT",
+                        "header": [{ "key": "Authorization", "value": "Bearer {{token}}" }],
+                        "url": { "raw": "{{baseUrl}}/meals/children/1/1", "host": ["{{baseUrl}}"], "path": ["meals", "children", "1", "1"] },
+                        "body": {
+                            "mode": "formdata",
+                            "formdata": [
+                                { "key": "title", "value": "Updated Lunch", "type": "text" },
+                                { "key": "ingredients", "value": "rice,beef,salad", "type": "text" },
+                                { "key": "recipe", "value": "Update steps...", "type": "text" }
+                            ]
+                        }
+                    }
+                },
+                {
+                    "name": "Delete Meal for Child",
+                    "request": {
+                        "method": "DELETE",
+                        "header": [{ "key": "Authorization", "value": "Bearer {{token}}" }],
+                        "url": { "raw": "{{baseUrl}}/meals/children/1/1", "host": ["{{baseUrl}}"], "path": ["meals", "children", "1", "1"] }
+                    }
+                }
+            ]
+        },
+        {
+            "name": "Product",
+            "item": [{
                     "name": "List Products",
                     "request": {
                         "method": "GET",
@@ -418,8 +457,7 @@
         },
         {
             "name": "Review",
-            "item": [
-                {
+            "item": [{
                     "name": "Add Review",
                     "request": {
                         "method": "POST",
@@ -458,18 +496,15 @@
         },
         {
             "name": "Family",
-            "item": [
-                {
+            "item": [{
                     "name": "Get Family",
                     "request": {
                         "method": "GET",
-                        "header": [
-                            {
-                                "key": "Authorization",
-                                "value": "Bearer {{token}}",
-                                "type": "text"
-                            }
-                        ],
+                        "header": [{
+                            "key": "Authorization",
+                            "value": "Bearer {{token}}",
+                            "type": "text"
+                        }],
                         "url": {
                             "raw": "{{baseUrl}}/api/family",
                             "host": ["{{baseUrl}}"],
@@ -481,13 +516,11 @@
                     "name": "Get Parents",
                     "request": {
                         "method": "GET",
-                        "header": [
-                            {
-                                "key": "Authorization",
-                                "value": "Bearer {{token}}",
-                                "type": "text"
-                            }
-                        ],
+                        "header": [{
+                            "key": "Authorization",
+                            "value": "Bearer {{token}}",
+                            "type": "text"
+                        }],
                         "url": {
                             "raw": "{{baseUrl}}/api/family/parents",
                             "host": ["{{baseUrl}}"],
@@ -499,13 +532,11 @@
                     "name": "Get Children",
                     "request": {
                         "method": "GET",
-                        "header": [
-                            {
-                                "key": "Authorization",
-                                "value": "Bearer {{token}}",
-                                "type": "text"
-                            }
-                        ],
+                        "header": [{
+                            "key": "Authorization",
+                            "value": "Bearer {{token}}",
+                            "type": "text"
+                        }],
                         "url": {
                             "raw": "{{baseUrl}}/api/family/children",
                             "host": ["{{baseUrl}}"],

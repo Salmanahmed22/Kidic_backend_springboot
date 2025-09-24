@@ -46,9 +46,11 @@ public class Child {
     private List<GrowthRecord> growthRecords = new ArrayList<>();
     
     @OneToMany(mappedBy = "child", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
+    @JsonManagedReference(value = "child-diseases")
     private List<DiseaseAndAllergy> diseasesAndAllergies = new ArrayList<>();
     
     @OneToMany(mappedBy = "child", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
+    @JsonManagedReference(value = "child-meals")
     private List<Meal> meals = new ArrayList<>();
     
     // Constructors

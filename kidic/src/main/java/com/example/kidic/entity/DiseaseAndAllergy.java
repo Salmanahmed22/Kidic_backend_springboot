@@ -1,7 +1,7 @@
 package com.example.kidic.entity;
 
+import com.fasterxml.jackson.annotation.JsonBackReference;
 import jakarta.persistence.*;
-import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.Size;
 
 @Entity
@@ -24,6 +24,7 @@ public class DiseaseAndAllergy {
     
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "child_id")
+    @JsonBackReference(value = "child-diseases")
     private Child child;
     
     // Constructors
