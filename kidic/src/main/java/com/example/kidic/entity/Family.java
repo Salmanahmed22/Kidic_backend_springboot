@@ -23,10 +23,6 @@ public class Family {
     @OneToMany(mappedBy = "family", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
     private List<Parent> parents = new ArrayList<>();
 
-
-    @OneToMany(mappedBy = "family", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
-    private List<Notification> notifications = new ArrayList<>();
-    
     // Constructors
     public Family() {}
 
@@ -55,12 +51,5 @@ public class Family {
     public void setParents(List<Parent> parents) {
         this.parents = parents;
     }
-    
-    public List<Notification> getNotifications() {
-        return notifications;
-    }
-    
-    public void setNotifications(List<Notification> notifications) {
-        this.notifications = notifications;
-    }
+
 }
