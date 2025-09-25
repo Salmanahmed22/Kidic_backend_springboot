@@ -545,6 +545,81 @@
                     }
                 }
             ]
+        },
+        {
+            "name": "notifications",
+            "item": [
+                {
+                    "name": "Send Notification",
+                    "request": {
+                        "method": "POST",
+                        "header": [
+                            {
+                                "key": "Authorization",
+                                "value": "Bearer {{token}}",
+                                "type": "text"
+                            }
+                        ],
+                        "url": {
+                            "raw": "{{baseUrl}}/api/notifications/send?message=Hello&type=INFO",
+                            "host": ["{{baseUrl}}"],
+                            "path": ["api", "notifications", "send"],
+                            "query": [
+                                { "key": "message", "value": "Hello" },
+                                { "key": "type", "value": "INFO" }
+                            ]
+                        }
+                    }
+                },
+                {
+                    "name": "Broadcast Notification",
+                    "request": {
+                        "method": "POST",
+                        "url": {
+                            "raw": "{{baseUrl}}/api/notifications/broadcast?message=Global&type=INFO",
+                            "host": ["{{baseUrl}}"],
+                            "path": ["api", "notifications", "broadcast"],
+                            "query": [
+                                { "key": "message", "value": "Global" },
+                                { "key": "type", "value": "INFO" }
+                            ]
+                        }
+                    }
+                },
+                {
+                    "name": "Get All Notifications",
+                    "request": {
+                        "method": "GET",
+                        "url": {
+                            "raw": "{{baseUrl}}/api/notifications/{{parentId}}",
+                            "host": ["{{baseUrl}}"],
+                            "path": ["api", "notifications", "{{parentId}}"]
+                        }
+                    }
+                },
+                {
+                    "name": "Get Unread Notifications",
+                    "request": {
+                        "method": "GET",
+                        "url": {
+                            "raw": "{{baseUrl}}/api/notifications/unread/{{parentId}}",
+                            "host": ["{{baseUrl}}"],
+                            "path": ["api", "notifications", "unread", "{{parentId}}"]
+                        }
+                    }
+                },
+                {
+                    "name": "Mark Notification As Read",
+                    "request": {
+                        "method": "PUT",
+                        "url": {
+                            "raw": "{{baseUrl}}/api/notifications/{{id}}/read",
+                            "host": ["{{baseUrl}}"],
+                            "path": ["api", "notifications", "{{id}}", "read"]
+                        }
+                    }
+                }
+            ]
         }
     ]
 }

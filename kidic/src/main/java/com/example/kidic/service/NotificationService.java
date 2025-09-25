@@ -43,7 +43,14 @@ public class NotificationService {
         }
     }
 
-    public List<Notification> getUserNotifications(Long parentId) {
+    public List<Notification> getUserNotifications(Long parentId,UUID familyId) {
+        Parent parent = parentRepository.findById(parentId)
+                .orElseThrow(()-> new RuntimeException("parent not found"));
+        System.out.println(familyId);
+        System.out.println(parent.getFamily().getId());
+        if (!parent.getFamily().getId().equals(familyId)) {
+            throw new RuntimeException("parent not found in the current family");
+        }
         return notificationRepository.findByParentIdOrderByCreatedAtDesc(parentId);
     }
 

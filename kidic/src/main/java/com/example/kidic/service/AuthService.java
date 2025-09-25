@@ -6,6 +6,7 @@ import com.example.kidic.dto.LoginRequestDTO;
 import com.example.kidic.dto.SignUpExistingFamilyRequestDTO;
 import com.example.kidic.dto.SignUpNewFamilyRequestDTO;
 import com.example.kidic.entity.Family;
+import com.example.kidic.entity.Notification;
 import com.example.kidic.entity.Parent;
 import com.example.kidic.repository.ParentRepository;
 import jakarta.transaction.Transactional;
@@ -28,6 +29,8 @@ public class AuthService {
     private AuthenticationManager authenticationManager;
     @Autowired
     private FamilyService familyService;
+    @Autowired
+    private NotificationService notificationService;
 
     @Transactional
     public AuthResponseDTO signUpNewFamily(SignUpNewFamilyRequestDTO request) {
@@ -76,6 +79,8 @@ public class AuthService {
             throw new IllegalArgumentException("Family not found!");
         }
         parent.setFamily(existingFamily);
+        notificationService.createNotification(request.getFamilyId(),
+                "new parent joined the family!", Notification.NotificationType.GENERAL);
         familyService.addParentToFamily(existingFamily, parent);
         parentRepository.save(parent);
         String token = jwtService.generateToken(parent);

@@ -42,12 +42,18 @@ public class NotificationController {
 
     // Get all notifications for a user
     @GetMapping("/{parentId}")
-    public List<Notification> getNotifications(@PathVariable Long parentId) {
-        return notificationService.getUserNotifications(parentId);
+    public List<Notification> getNotifications(@RequestHeader("Authorization") String authHeader,
+                                               @PathVariable Long parentId) {
+        String token = authHeader.substring(7);
+        UUID familyId = jwtService.extractFamilyId(token);
+        return notificationService.getUserNotifications(parentId,familyId);
     }
 
     @GetMapping("/unread/{parentId}")
-    public List<Notification> getUnreadNotifications(@PathVariable Long parentId) {
+    public List<Notification> getUnreadNotifications(@RequestHeader("Authorization") String authHeader,
+                                                     @PathVariable Long parentId) {
+        String token = authHeader.substring(7);
+        UUID familyId = jwtService.extractFamilyId(token);
         return notificationService.getUnreadNotifications(parentId);
     }
 

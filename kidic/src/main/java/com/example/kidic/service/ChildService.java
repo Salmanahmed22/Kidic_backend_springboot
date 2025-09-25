@@ -6,8 +6,10 @@ import com.example.kidic.dto.ChildResponseDTO;
 import com.example.kidic.dto.ChildUpdateRequestDTO;
 import com.example.kidic.entity.Child;
 import com.example.kidic.entity.Family;
+import com.example.kidic.entity.Notification;
 import com.example.kidic.repository.ChildRepository;
 import com.example.kidic.repository.FamilyRepository;
+import jakarta.transaction.Transactional;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -23,7 +25,10 @@ public class ChildService {
     private FamilyRepository familyRepository;
     @Autowired
     private FamilyService familyService;
+    @Autowired
+    private NotificationService notificationService;
 
+    @Transactional
     public ChildResponseDTO create(ChildRequestDTO request, String token) {
         UUID familyId = jwtService.extractFamilyId(token);
 
@@ -37,6 +42,8 @@ public class ChildService {
         Child child = toEntity(request,family);
 
         childRepository.save(child);
+        notificationService.createNotification(familyId,
+                "new child joined the family", Notification.NotificationType.GENERAL);
         return toResponseDTO(child);
     }
 
