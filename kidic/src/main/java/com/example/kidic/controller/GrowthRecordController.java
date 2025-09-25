@@ -12,7 +12,6 @@ import java.util.List;
 
 @RestController
 @RequestMapping("/api/growth-records")
-@CrossOrigin(origins = "*")
 public class GrowthRecordController {
 
     @Autowired
