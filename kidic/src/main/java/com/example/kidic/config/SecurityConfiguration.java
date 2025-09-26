@@ -25,7 +25,7 @@ public class SecurityConfiguration {
 
                 // Authorization rules
                 .authorizeHttpRequests(auth -> auth
-                        .requestMatchers("/api/auth/**", "/api/test/**", "/actuator/**").permitAll()
+                        .requestMatchers("/api/auth/**", "/api/test/**", "/actuator/**","/api/review/**").permitAll()
                         .anyRequest().authenticated()
                 )
                 .cors(cors->{})

@@ -22,13 +22,11 @@ public class ReviewController {
         return ResponseEntity.ok(reviewService.add(token,requestDTO));
     }
     @GetMapping("normal-reviews")
-    public ResponseEntity<List<ReviewResponseDTO>> getNormalReviews(
-            @RequestHeader("Authorization") String authHead){
+    public ResponseEntity<List<ReviewResponseDTO>> getNormalReviews(){
         return ResponseEntity.ok(reviewService.getNormalReviews());
     }
     @GetMapping("complains")
-    public ResponseEntity<List<ReviewResponseDTO>> getComplains(
-            @RequestHeader("Authorization") String authHead){
+    public ResponseEntity<List<ReviewResponseDTO>> getComplains(){
         return ResponseEntity.ok(reviewService.getComplains());
     }
 }

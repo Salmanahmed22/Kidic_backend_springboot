@@ -479,7 +479,7 @@
                         "header": [
                             { "key": "Authorization", "value": "Bearer {{token}}" }
                         ],
-                        "url": { "raw": "{{baseUrl}}/review/normal-reviews", "host": ["{{baseUrl}}"], "path": ["review"] }
+                        "url": { "raw": "{{baseUrl}}/review/normal-reviews", "host": ["{{baseUrl}}"], "path": ["review","normal-reviews"] }
                     }
                 },
                 {
@@ -489,7 +489,7 @@
                         "header": [
                             { "key": "Authorization", "value": "Bearer {{token}}" }
                         ],
-                        "url": { "raw": "{{baseUrl}}/review/complains", "host": ["{{baseUrl}}"], "path": ["review"] }
+                        "url": { "raw": "{{baseUrl}}/review/complains", "host": ["{{baseUrl}}"], "path": ["review","complains"] }
                     }
                 }
             ]
@@ -524,7 +524,7 @@
                         "url": {
                             "raw": "{{baseUrl}}/api/family/parents",
                             "host": ["{{baseUrl}}"],
-                            "path": ["api", "family", "parents"]
+                            "path": ["family", "parents"]
                         }
                     }
                 },
@@ -540,7 +540,7 @@
                         "url": {
                             "raw": "{{baseUrl}}/api/family/children",
                             "host": ["{{baseUrl}}"],
-                            "path": ["api", "family", "children"]
+                            "path": ["family", "children"]
                         }
                     }
                 }
